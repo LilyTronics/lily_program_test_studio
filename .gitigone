@@ -1,0 +1,6 @@
+# Python stuff
+*.pyc
+/.venv
+
+# Temporary stuff
+/temp
