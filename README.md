@@ -1,1 +1,0 @@
-# lily_program_test_studio
