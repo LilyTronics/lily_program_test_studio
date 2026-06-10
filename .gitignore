@@ -4,3 +4,6 @@
 
 # Temporary stuff
 /temp
+
+# Test reports
+/tests/test_reports
