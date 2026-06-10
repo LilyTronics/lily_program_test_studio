@@ -1,0 +1,9 @@
+[MESSAGES CONTROL]
+disable = missing-class-docstring,
+          missing-function-docstring,
+          multiple-statements,
+          too-few-public-methods
+
+[TYPECHECK]
+ignored-modules = wx,
+                  PyInstaller,
