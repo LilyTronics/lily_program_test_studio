@@ -1,5 +1,7 @@
 [MESSAGES CONTROL]
-disable = missing-class-docstring,
+disable = broad-exception-caught,
+          cyclic-import,
+          missing-class-docstring,
           missing-function-docstring,
           multiple-statements,
           too-few-public-methods
