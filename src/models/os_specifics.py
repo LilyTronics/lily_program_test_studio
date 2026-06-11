@@ -7,11 +7,9 @@ import sys
 
 from pathlib import Path
 
-import src.app_data as AppData
 
-
-def get_default_output_folder():
-    return os.path.join(Path.home(), AppData.OUTPUT_FOLDER_NAME)
+def get_user_dir():
+    return Path.home()
 
 def get_user_data_dir():
     extend_path = []
@@ -27,5 +25,5 @@ def get_user_data_dir():
 
 if __name__ =="__main__":
 
-    print("Default output folder:", get_default_output_folder())
+    print("User dir     :", get_user_dir())
     print("User data dir:", get_user_data_dir())
