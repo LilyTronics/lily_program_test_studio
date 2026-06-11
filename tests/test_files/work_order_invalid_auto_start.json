@@ -1,0 +1,9 @@
+{
+    "work_order": "test order",
+    "process": "test process",
+    "serial_numbers": [
+        "must be",
+        "a list of strings"
+    ],
+    "auto_start": "Must be boolean"
+}
