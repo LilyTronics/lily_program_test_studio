@@ -4,7 +4,7 @@ Work order object.
 
 import json
 
-from src.models.os_specifics import get_default_output_folder
+import src.app_data as AppData
 
 
 class WorkOrder():
@@ -16,7 +16,7 @@ class WorkOrder():
         "process": "",
         "serial_numbers": [],
         "auto_start": False,
-        "output_folder": get_default_output_folder()
+        "output_folder": AppData.OUTPUT_FOLDER
     }
 
     _test_fields = [
@@ -73,6 +73,6 @@ class WorkOrder():
 
 if __name__ == "__main__":
 
-    from tests.unit_tests.models_tests.work_order_test import WorkOrderTest
+    from tests.unit_tests.model_tests.work_order_test import WorkOrderTest
 
     WorkOrderTest().run()

@@ -2,7 +2,8 @@
 Work order model test.
 """
 
-from src.models.os_specifics import get_default_output_folder
+import src.app_data as AppData
+
 from src.models.work_order import WorkOrder
 from tests.lib.test_suite import TestSuite
 from tests.test_files.test_file import get_path
@@ -15,7 +16,7 @@ class WorkOrderTest(TestSuite):
         (WorkOrder.get_process, "", "test process"),
         (WorkOrder.get_serial_numbers, [], ["01234567", "89ABCDEF"]),
         (WorkOrder.get_auto_start, False, True),
-        (WorkOrder.get_output_folder, get_default_output_folder(), "C:\\test\\path")
+        (WorkOrder.get_output_folder, AppData.OUTPUT_FOLDER, "C:\\test\\path")
     ]
 
     _TEST_FILES = [
