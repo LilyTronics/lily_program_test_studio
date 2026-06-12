@@ -27,17 +27,17 @@ class ViewFrameMain(wx.Frame):
 
 
     def _create_input_controls(self, parent):
+        btn_load_wo = wx.Button(parent, wx.ID_ANY, "Load work order")
+        btn_add_snr = wx.Button(parent, wx.ID_ANY, "Add serial number")
+        btn_del_snr = wx.Button(parent, wx.ID_ANY, "Remove serial number")
+
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
         txt_work_order = wx.TextCtrl(parent, size=(200, -1))
         lbl_process = wx.StaticText(parent, wx.ID_ANY, "Process:")
         cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY)
         lbl_serials = wx.StaticText(parent, wx.ID_ANY, "Serial numbers:")
         lst_serials = ListAutosize(parent, wx.ID_ANY)
-        lst_serials.add_cols(["Serial number", ""], [0, 100])
-
-        btn_load_wo = wx.Button(parent, wx.ID_ANY, "Load work order")
-        btn_add_snr = wx.Button(parent, wx.ID_ANY, "Add serial number")
-        btn_del_snr = wx.Button(parent, wx.ID_ANY, "Remove serial number")
+        lst_serials.add_cols(["Serial number"], [0])
 
         grid = wx.GridBagSizer(5, 5)
         grid.Add(btn_load_wo, (0, 0), wx.DefaultSpan)
@@ -45,14 +45,14 @@ class ViewFrameMain(wx.Frame):
         grid.Add(btn_del_snr, (0, 3), wx.DefaultSpan)
 
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
-        grid.Add(txt_work_order, (3, 0), wx.DefaultSpan, wx.EXPAND)
+        grid.Add(txt_work_order, (3, 0), wx.DefaultSpan)
         grid.Add(lbl_process, (4, 0), wx.DefaultSpan)
         grid.Add(cmb_process, (5, 0), wx.DefaultSpan, wx.EXPAND)
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
         grid.Add(lst_serials, (3, 2), (4, 2), wx.EXPAND)
 
-        grid.AddGrowableCol(2)
-        grid.AddGrowableRow(3)
+        grid.AddGrowableCol(3)
+        grid.AddGrowableRow(6)
 
         return grid
 
