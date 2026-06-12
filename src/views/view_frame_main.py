@@ -4,7 +4,10 @@ Main view for the application.
 
 import wx
 
+import src.app_data as AppData
+
 from src.views.view_list_autosize import ListAutosize
+from src.views.view_panel_logger import ViewPanelLogger
 
 
 class ViewFrameMain(wx.Frame):
@@ -63,19 +66,25 @@ class ViewFrameMain(wx.Frame):
         return btn_start
 
     def _create_console(self, parent):
-        lbl_console = wx.StaticText(parent, wx.ID_ANY, "Log messages:")
-        txt_console = wx.TextCtrl(parent, style=wx.TE_MULTILINE | wx.TE_DONTWRAP | wx.TE_READONLY |
-                                    wx.TE_RICH)
-        txt_console.SetFont(wx.Font(
-            9, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False))
+        nb = wx.Notebook(parent)
+        app_log = ViewPanelLogger(nb, AppData.APP_LOG_FILE)
+        proc_log = ViewPanelLogger(nb)
+        nb.AddPage(app_log, "Application log")
+        nb.AddPage(proc_log, "Process log")
 
-        grid = wx.GridBagSizer(5, 5)
-        grid.Add(lbl_console, (0, 0), wx.DefaultSpan)
-        grid.Add(txt_console, (1, 0), wx.DefaultSpan, wx.EXPAND)
-        grid.AddGrowableCol(0)
-        grid.AddGrowableRow(1)
+        # lbl_console = wx.StaticText(parent, wx.ID_ANY, "Log messages:")
+        # txt_console = wx.TextCtrl(parent, style=wx.TE_MULTILINE | wx.TE_DONTWRAP | wx.TE_READONLY |
+        #                             wx.TE_RICH)
+        # txt_console.SetFont(wx.Font(
+        #     9, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False))
 
-        return grid
+        # grid = wx.GridBagSizer(5, 5)
+        # grid.Add(lbl_console, (0, 0), wx.DefaultSpan)
+        # grid.Add(txt_console, (1, 0), wx.DefaultSpan, wx.EXPAND)
+        # grid.AddGrowableCol(0)
+        # grid.AddGrowableRow(1)
+
+        return nb
 
 
 if __name__ == "__main__":
