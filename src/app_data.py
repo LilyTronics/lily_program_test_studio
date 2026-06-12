@@ -19,10 +19,12 @@ if EXE_NAME in sys.executable:
 else:
     APP_PATH = os.path.dirname(os.path.dirname(__file__))
 
+PROCESSES_PATH = os.path.join(APP_PATH, "processes")
 OUTPUT_FOLDER_NAME = "lily_prog_test_studio"
 
 
 if __name__ == "__main__":
 
     print(f"{APP_NAME} V{VERSION}")
-    print("App path:", APP_PATH)
+    print("App path      :", APP_PATH)
+    print("Processes path:", PROCESSES_PATH)
