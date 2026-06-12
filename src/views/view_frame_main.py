@@ -4,6 +4,8 @@ Main view for the application.
 
 import wx
 
+from src.views.view_list_autosize import ListAutosize
+
 
 class ViewFrameMain(wx.Frame):
 
@@ -30,7 +32,8 @@ class ViewFrameMain(wx.Frame):
         lbl_process = wx.StaticText(parent, wx.ID_ANY, "Process:")
         cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY)
         lbl_serials = wx.StaticText(parent, wx.ID_ANY, "Serial numbers:")
-        lst_serials = wx.ListCtrl(parent, style=wx.LC_REPORT)
+        lst_serials = ListAutosize(parent, wx.ID_ANY)
+        lst_serials.add_cols(["Serial number", ""], [0, 100])
 
         btn_load_wo = wx.Button(parent, wx.ID_ANY, "Load work order")
         btn_add_snr = wx.Button(parent, wx.ID_ANY, "Add serial number")
@@ -48,8 +51,8 @@ class ViewFrameMain(wx.Frame):
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
         grid.Add(lst_serials, (3, 2), (4, 2), wx.EXPAND)
 
-        grid.AddGrowableCol(3)
-        grid.AddGrowableRow(6)
+        grid.AddGrowableCol(2)
+        grid.AddGrowableRow(3)
 
         return grid
 
