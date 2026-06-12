@@ -1,0 +1,10 @@
+{
+    "work_order": "test order",
+    "process": "test process",
+    "serial_numbers": [
+        "01234567",
+        "89ABCDEF"
+    ],
+    "auto_start": true,
+    "output_folder": "C:\\test\\path"
+}

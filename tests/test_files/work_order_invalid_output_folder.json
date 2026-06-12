@@ -1,0 +1,10 @@
+{
+    "work_order": "test order",
+    "process": "test process",
+    "serial_numbers": [
+        "must be",
+        "a list of strings"
+    ],
+    "auto_start": false,
+    "output_folder": 10
+}
