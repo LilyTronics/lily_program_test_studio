@@ -13,7 +13,7 @@ from src.views.view_panel_logger import ViewPanelLogger
 class ViewFrameMain(wx.Frame):
 
     # Minimum screen resolution: 1366×768 / 1280x720 (still used on older laptops, anno 2026)
-    _MIN_WINDOW_SIZE = (800, 700)
+    _MIN_WINDOW_SIZE = (1000, 700)
 
     def __init__(self, title):
         super().__init__(None, title=title)
