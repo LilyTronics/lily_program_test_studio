@@ -34,6 +34,7 @@ class ViewFrameMain(wx.Frame):
         btn_load_wo = wx.Button(parent, wx.ID_ANY, "Load work order")
         btn_add_snr = wx.Button(parent, wx.ID_ANY, "Add serial number")
         btn_del_snr = wx.Button(parent, wx.ID_ANY, "Remove serial number")
+        btn_clear = wx.Button(parent, wx.ID_ANY, "Clear input")
 
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
         txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
@@ -47,13 +48,14 @@ class ViewFrameMain(wx.Frame):
         grid.Add(btn_load_wo, (0, 0), wx.DefaultSpan)
         grid.Add(btn_add_snr, (0, 2), wx.DefaultSpan)
         grid.Add(btn_del_snr, (0, 3), wx.DefaultSpan)
+        grid.Add(btn_clear, (0, 4), wx.DefaultSpan)
 
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
         grid.Add(txt_work_order, (3, 0), wx.DefaultSpan)
         grid.Add(lbl_process, (4, 0), wx.DefaultSpan)
         grid.Add(self._cmb_process, (5, 0), wx.DefaultSpan)
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
-        grid.Add(lst_serials, (3, 2), (4, 2), wx.EXPAND)
+        grid.Add(lst_serials, (3, 2), (4, 3), wx.EXPAND)
 
         grid.AddGrowableCol(3)
         grid.AddGrowableRow(6)
