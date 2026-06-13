@@ -39,6 +39,7 @@ class ControllerMain:
 
         self._view.Bind(wx.EVT_CLOSE, self._on_view_close)
         self._view.Bind(wx.EVT_BUTTON, self._on_load_work_order, id=IdManager.ID_BTN_LOAD_WO)
+        self._view.Bind(wx.EVT_BUTTON, self._on_add_serial, id=IdManager.ID_BTN_ADD_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
 
     def _load_processes(self):
@@ -78,6 +79,17 @@ class ControllerMain:
                 self._log.error(f"Error loading work order: {e}")
                 ViewDialogs.show_message(self._view, f"Error loading work order: {e}",
                                         dlg_title, wx.ICON_EXCLAMATION)
+        event.Skip()
+
+    def _on_add_serial(self, event):
+        dlg_title = "Add serial number"
+        value = ViewDialogs.show_text_input(self._view, "Enter one or more serial numbers, "
+                                            "separate serial numbers with a comma:", dlg_title,
+                                            width=500)
+        if value is not None:
+            parts = [x.strip() for x in value.split(",")]
+            parts = [ x for x in parts if x != ""]
+            self._view.append_serial_numbers(parts)
         event.Skip()
 
     def _on_clear(self, event):

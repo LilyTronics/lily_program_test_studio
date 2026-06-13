@@ -93,7 +93,10 @@ class ViewFrameMain(wx.Frame):
         else:
             self._cmb_process.SetValue(process)
         self._lst_serials.DeleteAllItems()
-        for serial in serial_numbers:
+        self.append_serial_numbers(serial_numbers)
+
+    def append_serial_numbers(self, serials):
+        for serial in serials:
             item = wx.ListItem()
             item.SetId(self._lst_serials.GetItemCount())
             item.SetText(serial)
