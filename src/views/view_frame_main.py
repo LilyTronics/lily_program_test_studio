@@ -5,6 +5,7 @@ Main view for the application.
 import wx
 
 import src.app_data as AppData
+import src.models.id_manager as IdManager
 import src.views.gui_sizes as GuiSizes
 
 from src.views.view_list_autosize import ListAutosize
@@ -31,10 +32,10 @@ class ViewFrameMain(wx.Frame):
 
 
     def _create_input_controls(self, parent):
-        btn_load_wo = wx.Button(parent, wx.ID_ANY, "Load work order")
-        btn_add_snr = wx.Button(parent, wx.ID_ANY, "Add serial number")
-        btn_del_snr = wx.Button(parent, wx.ID_ANY, "Remove serial number")
-        btn_clear = wx.Button(parent, wx.ID_ANY, "Clear input")
+        btn_load_wo = wx.Button(parent, IdManager.ID_BTN_LOAD_WO, "Load work order")
+        btn_add_snr = wx.Button(parent, IdManager.ID_BTN_ADD_SERIAL, "Add serial number")
+        btn_del_snr = wx.Button(parent, IdManager.ID_BTN_DEL_SERIAL, "Remove serial number")
+        btn_clear = wx.Button(parent, IdManager.ID_BTN_CLEAR, "Clear input")
 
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
         txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
@@ -63,7 +64,7 @@ class ViewFrameMain(wx.Frame):
         return grid
 
     def _create_start_button(self, parent):
-        btn_start = wx.Button(parent, wx.ID_ANY, "START", size=(200, 50))
+        btn_start = wx.Button(parent, IdManager.ID_BTN_START, "START", size=(200, 50))
         btn_start.SetFont(wx.Font(
             14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         return btn_start
