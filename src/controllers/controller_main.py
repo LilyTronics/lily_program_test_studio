@@ -4,8 +4,11 @@ Main controller.
 
 import wx
 
+import src.models.id_manager as IdManager
+
 from src.models.application_settings import ApplicationSettings
 from src.models.process_registry import ProcessesRegistry
+from src.models.work_order import WorkOrder
 from src.views.view_dialog_progress import ViewDialogProgress
 from src.views.view_dialogs import ViewDialogs
 from src.views.view_frame_main import ViewFrameMain
@@ -33,7 +36,9 @@ class ControllerMain:
         if -1 not in value:
             self._view.SetSize(value)
         self._view.Maximize(self._app_settings.get_main_window_maximized())
+
         self._view.Bind(wx.EVT_CLOSE, self._on_view_close)
+        self._view.Bind(wx.EVT_BUTTON, self._on_load_work_order, id=IdManager.ID_BTN_LOAD_WO)
 
     def _load_processes(self):
         dlg_title = "Loading processes"
@@ -52,6 +57,23 @@ class ControllerMain:
     ##################
     # Event handlers #
     ##################
+
+    def _on_load_work_order(self, event):
+        dlg_title = "Load work order"
+        filename = ViewDialogs.show_open_file(self._view, dlg_title,
+                                              file_filter="JSON files|*.json")
+        if filename is not None:
+            self._log.debug(f"Load work order: {filename}")
+            try:
+                WorkOrder.read_from_file(filename)
+                self._view.init_work_order(WorkOrder.get_work_order(),
+                                           WorkOrder.get_process(),
+                                           WorkOrder.get_serial_numbers())
+            except Exception as e:
+                self._log.error(f"Error loading work order: {e}")
+                ViewDialogs.show_message(self._view, f"Error loading work order: {e}",
+                                        dlg_title, wx.ICON_EXCLAMATION)
+        event.Skip()
 
     def _on_view_close(self, event):
         self._app_settings.store_main_window_maximized(self._view.IsMaximized())

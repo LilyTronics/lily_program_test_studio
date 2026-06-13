@@ -38,12 +38,12 @@ class ViewFrameMain(wx.Frame):
         btn_clear = wx.Button(parent, IdManager.ID_BTN_CLEAR, "Clear input")
 
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
-        txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
+        self._txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
         lbl_process = wx.StaticText(parent, wx.ID_ANY, "Process:")
         self._cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY, size=GuiSizes.WIDTH_LARGE)
         lbl_serials = wx.StaticText(parent, wx.ID_ANY, "Serial numbers:")
-        lst_serials = ListAutosize(parent, wx.ID_ANY)
-        lst_serials.add_cols(["Serial number"], [0])
+        self._lst_serials = ListAutosize(parent, wx.ID_ANY)
+        self._lst_serials.add_cols(["Serial number"], [0])
 
         grid = wx.GridBagSizer(*GuiSizes.GRID_SPACING)
         grid.Add(btn_load_wo, (0, 0), wx.DefaultSpan)
@@ -52,11 +52,11 @@ class ViewFrameMain(wx.Frame):
         grid.Add(btn_clear, (0, 4), wx.DefaultSpan)
 
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
-        grid.Add(txt_work_order, (3, 0), wx.DefaultSpan)
+        grid.Add(self._txt_work_order, (3, 0), wx.DefaultSpan)
         grid.Add(lbl_process, (4, 0), wx.DefaultSpan)
         grid.Add(self._cmb_process, (5, 0), wx.DefaultSpan)
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
-        grid.Add(lst_serials, (3, 2), (4, 3), wx.EXPAND)
+        grid.Add(self._lst_serials, (3, 2), (4, 3), wx.EXPAND)
 
         grid.AddGrowableCol(3)
         grid.AddGrowableRow(6)
@@ -83,6 +83,18 @@ class ViewFrameMain(wx.Frame):
 
     def init_processes(self, process_names):
         self._cmb_process.SetItems(sorted(process_names))
+
+    def init_work_order(self, work_order, process, serial_numbers):
+        self._txt_work_order.SetValue(work_order)
+        if process not in self._cmb_process.GetItems():
+            raise Exception(f"The process '{process}' does not exist")
+        self._cmb_process.SetValue(process)
+        self._lst_serials.DeleteAllItems()
+        for serial in serial_numbers:
+            item = wx.ListItem()
+            item.SetId(self._lst_serials.GetItemCount())
+            item.SetText(serial)
+            self._lst_serials.InsertItem(item)
 
 
 if __name__ == "__main__":
