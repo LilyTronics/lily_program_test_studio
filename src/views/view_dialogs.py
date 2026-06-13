@@ -48,6 +48,16 @@ class ViewDialogs:
         dlg.Destroy()
         return selected_file
 
+    @staticmethod
+    def show_text_input(parent, message, title, default_value="", width=400):
+        value = None
+        dlg = wx.TextEntryDialog(parent, message, caption=title, value=default_value)
+        dlg.SetSize((width, -1))
+        if dlg.ShowModal() == wx.ID_OK:
+            value = dlg.GetValue()
+        dlg.Destroy()
+        return value
+
 
 if __name__ == "__main__":
 
@@ -58,5 +68,6 @@ if __name__ == "__main__":
                                    check_box_text="Don't show again"))
     filename = ViewDialogs.show_open_file(None, "Open file")
     ViewDialogs.show_confirm(None, f"Did you just opened: {filename}?", "Test")
+    print(ViewDialogs.show_text_input(None, "Your text:", "Text entry"))
 
     app.MainLoop()
