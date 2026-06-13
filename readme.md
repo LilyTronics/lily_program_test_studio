@@ -6,6 +6,7 @@ Framework for automatic programming and testing electronic devices for manufactu
 * Manual programming and testing optional
 * Sequential or parallel programming and testing
 * Extensive reporting
-* Fully customisable processes using Python
+* Fully customizable processes using Python
+
 
 ![main window](src/screenshot.png)
