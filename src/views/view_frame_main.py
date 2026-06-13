@@ -5,6 +5,7 @@ Main view for the application.
 import wx
 
 import src.app_data as AppData
+import src.views.gui_sizes as GuiSizes
 
 from src.views.view_list_autosize import ListAutosize
 from src.views.view_panel_logger import ViewPanelLogger
@@ -21,9 +22,9 @@ class ViewFrameMain(wx.Frame):
         panel = wx.Panel(self)
 
         box = wx.BoxSizer(wx.VERTICAL)
-        box.Add(self._create_input_controls(panel), 2, wx.EXPAND | wx.ALL, 10)
-        box.Add(self._create_start_button(panel), 0, wx.ALIGN_CENTER | wx.ALL, 10)
-        box.Add(self._create_console(panel), 3, wx.EXPAND | wx.ALL, 10)
+        box.Add(self._create_input_controls(panel), 2, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._create_start_button(panel), 0, wx.ALIGN_CENTER | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._create_console(panel), 3, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
 
         panel.SetSizer(box)
         self.SetInitialSize(self._MIN_WINDOW_SIZE)
@@ -35,14 +36,14 @@ class ViewFrameMain(wx.Frame):
         btn_del_snr = wx.Button(parent, wx.ID_ANY, "Remove serial number")
 
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
-        txt_work_order = wx.TextCtrl(parent, size=(200, -1))
+        txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
         lbl_process = wx.StaticText(parent, wx.ID_ANY, "Process:")
-        self._cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY)
+        self._cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY, size=GuiSizes.WIDTH_LARGE)
         lbl_serials = wx.StaticText(parent, wx.ID_ANY, "Serial numbers:")
         lst_serials = ListAutosize(parent, wx.ID_ANY)
         lst_serials.add_cols(["Serial number"], [0])
 
-        grid = wx.GridBagSizer(5, 5)
+        grid = wx.GridBagSizer(*GuiSizes.GRID_SPACING)
         grid.Add(btn_load_wo, (0, 0), wx.DefaultSpan)
         grid.Add(btn_add_snr, (0, 2), wx.DefaultSpan)
         grid.Add(btn_del_snr, (0, 3), wx.DefaultSpan)
@@ -50,7 +51,7 @@ class ViewFrameMain(wx.Frame):
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
         grid.Add(txt_work_order, (3, 0), wx.DefaultSpan)
         grid.Add(lbl_process, (4, 0), wx.DefaultSpan)
-        grid.Add(self._cmb_process, (5, 0), wx.DefaultSpan, wx.EXPAND)
+        grid.Add(self._cmb_process, (5, 0), wx.DefaultSpan)
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
         grid.Add(lst_serials, (3, 2), (4, 2), wx.EXPAND)
 

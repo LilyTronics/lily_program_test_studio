@@ -6,7 +6,7 @@ import wx
 
 
 # Spacing bewteen controls in a grid
-GRID_SPACING = 10
+GRID_SPACING = (10, 10)
 
 # Spacing of controls in a box
 BOX_SPACING = 10
