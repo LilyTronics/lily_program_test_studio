@@ -102,6 +102,18 @@ class ViewFrameMain(wx.Frame):
             item.SetText(serial)
             self._lst_serials.InsertItem(item)
 
+    def get_selected_serial_number(self):
+        serial = None
+        index = self._lst_serials.GetFirstSelected()
+        if index != -1:
+            serial = self._lst_serials.GetItemText(index)
+        return serial
+
+    def remove_serial_number(self, serial_number):
+        index = self._lst_serials.FindItem(-1, serial_number)
+        if index != -1:
+            self._lst_serials.DeleteItem(index)
+
 
 if __name__ == "__main__":
 

@@ -40,6 +40,7 @@ class ControllerMain:
         self._view.Bind(wx.EVT_CLOSE, self._on_view_close)
         self._view.Bind(wx.EVT_BUTTON, self._on_load_work_order, id=IdManager.ID_BTN_LOAD_WO)
         self._view.Bind(wx.EVT_BUTTON, self._on_add_serial, id=IdManager.ID_BTN_ADD_SERIAL)
+        self._view.Bind(wx.EVT_BUTTON, self._on_del_serial, id=IdManager.ID_BTN_DEL_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
 
     def _load_processes(self):
@@ -90,6 +91,19 @@ class ControllerMain:
             parts = [x.strip() for x in value.split(",")]
             parts = [ x for x in parts if x != ""]
             self._view.append_serial_numbers(parts)
+        event.Skip()
+
+    def _on_del_serial(self, event):
+        dlg_title = "Remove serial number"
+        serial = self._view.get_selected_serial_number()
+        if serial is None:
+            ViewDialogs.show_message(self._view, "Select a serial number from the list.",
+                                     dlg_title)
+        else:
+            result = ViewDialogs.show_confirm(self._view, f"Remove serial number: '{serial}'?",
+                                              dlg_title)
+            if result == wx.ID_YES:
+                self._view.remove_serial_number(serial)
         event.Skip()
 
     def _on_clear(self, event):
