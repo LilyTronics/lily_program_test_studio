@@ -1,0 +1,7 @@
+{
+    "work_order": "your work order ID",
+    "process": "name of the process that needs to be used",
+    "serial_numbers": ["serial 1", "serial 2", "..."],
+    "auto_start": false,
+    "output_folder": "/path/to/output/folder"
+}
