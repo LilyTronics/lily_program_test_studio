@@ -10,8 +10,8 @@ from src.controllers.controller_main import ControllerMain
 from src.models.logger import Logger
 
 
-def run_main():
-    logger = Logger(AppData.APP_LOG_FILE)
+def run_main(log_to_stdout=False):
+    logger = Logger(AppData.APP_LOG_FILE, log_to_stdout)
     logger.info("Application started")
     logger.info(f"Application path    : {AppData.APP_PATH}")
     logger.info(f"Processes path      : {AppData.PROCESSES_PATH}")
@@ -19,7 +19,7 @@ def run_main():
 
     app = wx.App(redirect=False)
     app.SetAppName(AppData.EXE_NAME)
-    ControllerMain(f"{AppData.APP_NAME} V{AppData.VERSION}")
+    ControllerMain(f"{AppData.APP_NAME} V{AppData.VERSION}", logger)
     app.MainLoop()
 
     logger.info("Application stopped")
