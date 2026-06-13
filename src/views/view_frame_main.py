@@ -87,8 +87,11 @@ class ViewFrameMain(wx.Frame):
     def init_work_order(self, work_order, process, serial_numbers):
         self._txt_work_order.SetValue(work_order)
         if process not in self._cmb_process.GetItems():
-            raise Exception(f"The process '{process}' does not exist")
-        self._cmb_process.SetValue(process)
+            self._cmb_process.SetSelection(wx.NOT_FOUND)
+            if process != "":
+                raise Exception(f"The process '{process}' does not exist")
+        else:
+            self._cmb_process.SetValue(process)
         self._lst_serials.DeleteAllItems()
         for serial in serial_numbers:
             item = wx.ListItem()

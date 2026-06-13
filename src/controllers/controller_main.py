@@ -39,6 +39,7 @@ class ControllerMain:
 
         self._view.Bind(wx.EVT_CLOSE, self._on_view_close)
         self._view.Bind(wx.EVT_BUTTON, self._on_load_work_order, id=IdManager.ID_BTN_LOAD_WO)
+        self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
 
     def _load_processes(self):
         dlg_title = "Loading processes"
@@ -54,6 +55,9 @@ class ControllerMain:
         self._log.debug(f"{len(ProcessesRegistry.get_processes())} processes loaded")
         self._view.init_processes(ProcessesRegistry.get_process_names())
 
+    def _clear_input(self):
+        self._view.init_work_order("", "", [])
+
     ##################
     # Event handlers #
     ##################
@@ -64,6 +68,7 @@ class ControllerMain:
                                               file_filter="JSON files|*.json")
         if filename is not None:
             self._log.debug(f"Load work order: {filename}")
+            self._clear_input()
             try:
                 WorkOrder.read_from_file(filename)
                 self._view.init_work_order(WorkOrder.get_work_order(),
@@ -73,6 +78,10 @@ class ControllerMain:
                 self._log.error(f"Error loading work order: {e}")
                 ViewDialogs.show_message(self._view, f"Error loading work order: {e}",
                                         dlg_title, wx.ICON_EXCLAMATION)
+        event.Skip()
+
+    def _on_clear(self, event):
+        self._clear_input()
         event.Skip()
 
     def _on_view_close(self, event):
