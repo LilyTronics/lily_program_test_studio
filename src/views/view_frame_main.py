@@ -37,7 +37,7 @@ class ViewFrameMain(wx.Frame):
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
         txt_work_order = wx.TextCtrl(parent, size=(200, -1))
         lbl_process = wx.StaticText(parent, wx.ID_ANY, "Process:")
-        cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY)
+        self._cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY)
         lbl_serials = wx.StaticText(parent, wx.ID_ANY, "Serial numbers:")
         lst_serials = ListAutosize(parent, wx.ID_ANY)
         lst_serials.add_cols(["Serial number"], [0])
@@ -50,7 +50,7 @@ class ViewFrameMain(wx.Frame):
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
         grid.Add(txt_work_order, (3, 0), wx.DefaultSpan)
         grid.Add(lbl_process, (4, 0), wx.DefaultSpan)
-        grid.Add(cmb_process, (5, 0), wx.DefaultSpan, wx.EXPAND)
+        grid.Add(self._cmb_process, (5, 0), wx.DefaultSpan, wx.EXPAND)
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
         grid.Add(lst_serials, (3, 2), (4, 2), wx.EXPAND)
 
@@ -71,20 +71,14 @@ class ViewFrameMain(wx.Frame):
         proc_log = ViewPanelLogger(nb)
         nb.AddPage(app_log, "Application log")
         nb.AddPage(proc_log, "Process log")
-
-        # lbl_console = wx.StaticText(parent, wx.ID_ANY, "Log messages:")
-        # txt_console = wx.TextCtrl(parent, style=wx.TE_MULTILINE | wx.TE_DONTWRAP | wx.TE_READONLY |
-        #                             wx.TE_RICH)
-        # txt_console.SetFont(wx.Font(
-        #     9, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False))
-
-        # grid = wx.GridBagSizer(5, 5)
-        # grid.Add(lbl_console, (0, 0), wx.DefaultSpan)
-        # grid.Add(txt_console, (1, 0), wx.DefaultSpan, wx.EXPAND)
-        # grid.AddGrowableCol(0)
-        # grid.AddGrowableRow(1)
-
         return nb
+
+    ##########
+    # Public #
+    ##########
+
+    def init_processes(self, process_names):
+        self._cmb_process.SetItems(sorted(process_names))
 
 
 if __name__ == "__main__":
