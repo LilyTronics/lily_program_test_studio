@@ -8,6 +8,7 @@ import src.models.id_manager as IdManager
 
 from src.models.application_settings import ApplicationSettings
 from src.models.process_registry import ProcessesRegistry
+from src.models.process_runner import ProcessRunner
 from src.models.work_order import WorkOrder
 from src.views.view_dialog_progress import ViewDialogProgress
 from src.views.view_dialogs import ViewDialogs
@@ -42,6 +43,7 @@ class ControllerMain:
         self._view.Bind(wx.EVT_BUTTON, self._on_add_serial, id=IdManager.ID_BTN_ADD_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_del_serial, id=IdManager.ID_BTN_DEL_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
+        self._view.Bind(wx.EVT_BUTTON, self._on_start, id=IdManager.ID_BTN_START)
 
     def _load_processes(self):
         dlg_title = "Loading processes"
@@ -108,6 +110,11 @@ class ControllerMain:
 
     def _on_clear(self, event):
         self._clear_input()
+        event.Skip()
+
+    def _on_start(self, event):
+        settings = self._view.get_settings()
+        wx.CallAfter(ProcessRunner.run_process, settings)
         event.Skip()
 
     def _on_view_close(self, event):

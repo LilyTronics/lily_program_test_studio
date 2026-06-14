@@ -114,6 +114,16 @@ class ViewFrameMain(wx.Frame):
         if index != -1:
             self._lst_serials.DeleteItem(index)
 
+    def get_settings(self):
+        return {
+            "work_order": self._txt_work_order.GetValue().strip(),
+            "process": self._cmb_process.GetValue().strip(),
+            "serial_numbers": [
+                self._lst_serials.GetItemText(i)
+                for i in range(self._lst_serials.GetItemCount())
+            ]
+        }
+
 
 if __name__ == "__main__":
 
