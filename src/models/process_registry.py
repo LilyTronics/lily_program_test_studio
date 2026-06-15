@@ -32,10 +32,6 @@ class ProcessesRegistry:
 
     @classmethod
     def _add_process(cls, attribute):
-        matches = [x for x in cls._processes if x.id == attribute.id]
-        if len(matches) > 0:
-            raise Exception(f"Duplicate process ID: '{attribute.id}' "
-                            f"for '{attribute.name}' and '{matches[0].name}'")
         matches = [x for x in cls._processes if x.name == attribute.name]
         if len(matches) > 0:
             raise Exception(f"Duplicate process name: '{attribute.name}'")
@@ -104,13 +100,8 @@ class ProcessesRegistry:
         return [p.name for p in cls._processes]
 
     @classmethod
-    def get_process(cls, query):
-        # Query can be ID or process name
-        # Prio is ID
-        matches = [x for x in cls._processes if x.id == query]
-        if len(matches) == 0:
-            # Next search process name
-            matches = [x for x in cls._processes if x.name == query]
+    def get_process(cls, name):
+        matches = [x for x in cls._processes if x.name == name]
         return None if len(matches) != 1 else matches[0]
 
 
