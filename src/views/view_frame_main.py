@@ -4,13 +4,18 @@ Main view for the application.
 
 import wx
 
+import src.app_data as AppData
+import src.models.id_manager as IdManager
+import src.views.gui_sizes as GuiSizes
+
 from src.views.view_list_autosize import ListAutosize
+from src.views.view_panel_logger import ViewPanelLogger
 
 
 class ViewFrameMain(wx.Frame):
 
     # Minimum screen resolution: 1366×768 / 1280x720 (still used on older laptops, anno 2026)
-    _MIN_WINDOW_SIZE = (800, 700)
+    _MIN_WINDOW_SIZE = (1000, 700)
 
     def __init__(self, title):
         super().__init__(None, title=title)
@@ -18,38 +23,40 @@ class ViewFrameMain(wx.Frame):
         panel = wx.Panel(self)
 
         box = wx.BoxSizer(wx.VERTICAL)
-        box.Add(self._create_input_controls(panel), 2, wx.EXPAND | wx.ALL, 10)
-        box.Add(self._create_start_button(panel), 0, wx.ALIGN_CENTER | wx.ALL, 10)
-        box.Add(self._create_console(panel), 3, wx.EXPAND | wx.ALL, 10)
+        box.Add(self._create_input_controls(panel), 2, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._create_start_button(panel), 0, wx.ALIGN_CENTER | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._create_console(panel), 3, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
 
         panel.SetSizer(box)
         self.SetInitialSize(self._MIN_WINDOW_SIZE)
 
 
     def _create_input_controls(self, parent):
+        btn_load_wo = wx.Button(parent, IdManager.ID_BTN_LOAD_WO, "Load work order")
+        btn_add_snr = wx.Button(parent, IdManager.ID_BTN_ADD_SERIAL, "Add serial number")
+        btn_del_snr = wx.Button(parent, IdManager.ID_BTN_DEL_SERIAL, "Remove serial number")
+        btn_clear = wx.Button(parent, IdManager.ID_BTN_CLEAR, "Clear input")
+
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
-        txt_work_order = wx.TextCtrl(parent, size=(200, -1))
+        self._txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
         lbl_process = wx.StaticText(parent, wx.ID_ANY, "Process:")
-        cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY)
+        self._cmb_process = wx.ComboBox(parent, style=wx.CB_READONLY, size=GuiSizes.WIDTH_LARGE)
         lbl_serials = wx.StaticText(parent, wx.ID_ANY, "Serial numbers:")
-        lst_serials = ListAutosize(parent, wx.ID_ANY)
-        lst_serials.add_cols(["Serial number", ""], [0, 100])
+        self._lst_serials = ListAutosize(parent, wx.ID_ANY)
+        self._lst_serials.add_cols(["Serial number"], [0])
 
-        btn_load_wo = wx.Button(parent, wx.ID_ANY, "Load work order")
-        btn_add_snr = wx.Button(parent, wx.ID_ANY, "Add serial number")
-        btn_del_snr = wx.Button(parent, wx.ID_ANY, "Remove serial number")
-
-        grid = wx.GridBagSizer(5, 5)
+        grid = wx.GridBagSizer(*GuiSizes.GRID_SPACING)
         grid.Add(btn_load_wo, (0, 0), wx.DefaultSpan)
         grid.Add(btn_add_snr, (0, 2), wx.DefaultSpan)
         grid.Add(btn_del_snr, (0, 3), wx.DefaultSpan)
+        grid.Add(btn_clear, (0, 4), wx.DefaultSpan)
 
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
-        grid.Add(txt_work_order, (3, 0), wx.DefaultSpan, wx.EXPAND)
+        grid.Add(self._txt_work_order, (3, 0), wx.DefaultSpan)
         grid.Add(lbl_process, (4, 0), wx.DefaultSpan)
-        grid.Add(cmb_process, (5, 0), wx.DefaultSpan, wx.EXPAND)
+        grid.Add(self._cmb_process, (5, 0), wx.DefaultSpan)
         grid.Add(lbl_serials, (2, 2), wx.DefaultSpan)
-        grid.Add(lst_serials, (3, 2), (4, 2), wx.EXPAND)
+        grid.Add(self._lst_serials, (3, 2), (4, 3), wx.EXPAND)
 
         grid.AddGrowableCol(2)
         grid.AddGrowableRow(3)
@@ -57,25 +64,65 @@ class ViewFrameMain(wx.Frame):
         return grid
 
     def _create_start_button(self, parent):
-        btn_start = wx.Button(parent, wx.ID_ANY, "START", size=(200, 50))
+        btn_start = wx.Button(parent, IdManager.ID_BTN_START, "START", size=(200, 50))
         btn_start.SetFont(wx.Font(
             14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         return btn_start
 
     def _create_console(self, parent):
-        lbl_console = wx.StaticText(parent, wx.ID_ANY, "Log messages:")
-        txt_console = wx.TextCtrl(parent, style=wx.TE_MULTILINE | wx.TE_DONTWRAP | wx.TE_READONLY |
-                                    wx.TE_RICH)
-        txt_console.SetFont(wx.Font(
-            9, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False))
+        nb = wx.Notebook(parent)
+        app_log = ViewPanelLogger(nb, AppData.APP_LOG_FILE)
+        proc_log = ViewPanelLogger(nb)
+        nb.AddPage(app_log, "Application log")
+        nb.AddPage(proc_log, "Process log")
+        return nb
 
-        grid = wx.GridBagSizer(5, 5)
-        grid.Add(lbl_console, (0, 0), wx.DefaultSpan)
-        grid.Add(txt_console, (1, 0), wx.DefaultSpan, wx.EXPAND)
-        grid.AddGrowableCol(0)
-        grid.AddGrowableRow(1)
+    ##########
+    # Public #
+    ##########
 
-        return grid
+    def init_processes(self, process_names):
+        self._cmb_process.SetItems(sorted(process_names))
+
+    def init_work_order(self, work_order, process, serial_numbers):
+        self._txt_work_order.SetValue(work_order)
+        if process not in self._cmb_process.GetItems():
+            self._cmb_process.SetSelection(wx.NOT_FOUND)
+            if process != "":
+                raise Exception(f"The process '{process}' does not exist")
+        else:
+            self._cmb_process.SetValue(process)
+        self._lst_serials.DeleteAllItems()
+        self.append_serial_numbers(serial_numbers)
+
+    def append_serial_numbers(self, serials):
+        for serial in serials:
+            item = wx.ListItem()
+            item.SetId(self._lst_serials.GetItemCount())
+            item.SetText(serial)
+            self._lst_serials.InsertItem(item)
+
+    def get_selected_serial_number(self):
+        serial = None
+        index = self._lst_serials.GetFirstSelected()
+        if index != -1:
+            serial = self._lst_serials.GetItemText(index)
+        return serial
+
+    def remove_serial_number(self, serial_number):
+        index = self._lst_serials.FindItem(-1, serial_number)
+        if index != -1:
+            self._lst_serials.DeleteItem(index)
+
+    def get_settings(self):
+        return {
+            "work_order": self._txt_work_order.GetValue().strip(),
+            "process": self._cmb_process.GetValue().strip(),
+            "serial_numbers": [
+                self._lst_serials.GetItemText(i)
+                for i in range(self._lst_serials.GetItemCount())
+            ]
+        }
 
 
 if __name__ == "__main__":

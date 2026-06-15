@@ -100,6 +100,10 @@ class ProcessesRegistry:
         return cls._processes
 
     @classmethod
+    def get_process_names(cls):
+        return [p.name for p in cls._processes]
+
+    @classmethod
     def get_process(cls, query):
         # Query can be ID or process name
         # Prio is ID

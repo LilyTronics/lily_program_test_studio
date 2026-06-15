@@ -12,7 +12,9 @@ class ListAutosize(wx.ListCtrl):
     def __init__(self, parent, control_id=wx.ID_ANY, style=0):
         super().__init__(parent, control_id, style=self._DEFAULT_STYLE | style)
         self._min_col_widths = []
-        self
+        # Required for grid bag sizer
+        self.SetMinSize((0, 0))
+        self.SetInitialSize((0, 0))
 
     def add_cols(self, col_names, min_col_widths):
         self._min_col_widths = min_col_widths

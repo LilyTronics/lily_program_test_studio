@@ -1,10 +1,14 @@
 [MESSAGES CONTROL]
 disable = broad-exception-caught,
+          broad-exception-raised,
           cyclic-import,
           missing-class-docstring,
           missing-function-docstring,
           multiple-statements,
-          too-few-public-methods
+          too-few-public-methods,
+          too-many-branches,
+          too-many-locals,
+          too-many-nested-blocks
 
 [TYPECHECK]
 ignored-modules = wx,
