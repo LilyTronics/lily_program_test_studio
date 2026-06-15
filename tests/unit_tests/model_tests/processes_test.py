@@ -61,9 +61,9 @@ class ProcessesTest(TestSuite):
     def test_get_process(self):
         processes = ProcessesRegistry.get_processes()
         self.fail_if(len(processes) == 0, "Processes required for this test")
-        for query in (processes[0].id, processes[0].name):
-            self.log.debug(f"Get driver for {query}")
-            process_class = ProcessesRegistry.get_process(query)
+        for process in processes:
+            self.log.debug(f"Get process for {process.name}")
+            process_class = ProcessesRegistry.get_process(process.name)
             self.log.debug(f"Process class: {process_class}")
             self.fail_if(process_class is None, "No process found")
 
