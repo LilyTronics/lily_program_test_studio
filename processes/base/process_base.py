@@ -9,7 +9,6 @@ class ProcessBase(ABC):
 
     name = ""
 
-
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         # Process name
@@ -19,7 +18,7 @@ class ProcessBase(ABC):
             )
         if not isinstance(cls.name, str):
             raise ValueError(
-                f"(Process) Process name is not a sring in process {cls.__name__}"
+                f"(Process) Process name is not a string in process {cls.__name__}"
             )
 
 if __name__ == "__main__":
