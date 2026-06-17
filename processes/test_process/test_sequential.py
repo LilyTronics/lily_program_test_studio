@@ -15,6 +15,6 @@ class ProcessTestSequential(ProcessBase):
 
 if __name__ == "__main__":
 
-    from processes.test_process.run_test_process import run_process
+    from processes.common.test_run_process import run_process
 
     run_process(ProcessTestSequential)
