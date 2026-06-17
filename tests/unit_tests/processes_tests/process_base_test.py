@@ -1,5 +1,5 @@
 """
-Template for a test suite
+Test for the process base class.
 """
 
 import os
