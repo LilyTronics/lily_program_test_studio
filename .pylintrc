@@ -2,6 +2,7 @@
 disable = broad-exception-caught,
           broad-exception-raised,
           cyclic-import,
+          duplicate-code,
           missing-class-docstring,
           missing-function-docstring,
           multiple-statements,
