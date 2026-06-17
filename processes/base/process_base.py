@@ -4,6 +4,8 @@ Base class for a process.
 
 from abc import ABC
 
+from processes.base.task_base import TaskBase
+
 
 class ProcessBase(ABC):
 
@@ -22,9 +24,17 @@ class ProcessBase(ABC):
                 f"(Process) Process name is not a string in process {cls.__name__}"
             )
         # Tasks
+        if not isinstance(cls.tasks, list):
+            raise ValueError(
+                f"(Process) Tasks is not a list in process {cls.__name__}"
+            )
         if len(cls.tasks) == 0:
             raise ValueError(
                 f"(Process) No tasks for process {cls.__name__}"
+            )
+        if not all(isinstance(x, TaskBase) for x in cls.tasks):
+            raise ValueError(
+                f"(Process) Not all tasks are derived from TaskBase for process {cls.__name__}"
             )
 
 

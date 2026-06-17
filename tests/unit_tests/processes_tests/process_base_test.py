@@ -46,8 +46,19 @@ class ProcessBaseTest(TestSuite):
             (
                 {"name": "Test process"},
                 "(Process) No tasks for process ProcessTest"
+            ),
+            (
+                {"name": "Test process", "tasks" : 1234},
+                "(Process) Tasks is not a list in process ProcessTest"
+            ),
+            (
+                {"name": "Test process", "tasks" : []},
+                "(Process) No tasks for process ProcessTest"
+            ),
+            (
+                {"name": "Test process", "tasks" : ["1234"]},
+                "(Process) Not all tasks are derived from TaskBase for process ProcessTest"
             )
-
         ]
         for params in test_params:
             try:
