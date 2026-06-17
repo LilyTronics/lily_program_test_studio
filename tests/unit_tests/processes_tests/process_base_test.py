@@ -41,7 +41,11 @@ class ProcessBaseTest(TestSuite):
             ),
             (
                 {"name": 123},
-                "(Process) Process name is not a sring in process ProcessTest"
+                "(Process) Process name is not a string in process ProcessTest"
+            ),
+            (
+                {"name": "Test process"},
+                "(Process) No tasks for process ProcessTest"
             )
 
         ]

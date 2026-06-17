@@ -8,6 +8,7 @@ from abc import ABC
 class ProcessBase(ABC):
 
     name = ""
+    tasks = []
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -20,6 +21,12 @@ class ProcessBase(ABC):
             raise ValueError(
                 f"(Process) Process name is not a string in process {cls.__name__}"
             )
+        # Tasks
+        if len(cls.tasks) == 0:
+            raise ValueError(
+                f"(Process) No tasks for process {cls.__name__}"
+            )
+
 
 if __name__ == "__main__":
 
