@@ -50,10 +50,34 @@ class ProcessBase(ABC):
                 f"(Process) Not all tasks are derived from TaskBase for process {cls.__name__}"
             )
 
+    def __init__(self, work_order, serial_numbers):
+        # Work order
+        if not isinstance(work_order, str):
+            raise ValueError(
+                f"(Process) Work order is not a string for process {self.get_class_name()}"
+            )
+        if not isinstance(serial_numbers, list):
+            raise ValueError(
+                f"(Process) Sserial Numbers is not a list for process {self.get_class_name()}"
+            )
+        if len(serial_numbers) == 0:
+            raise ValueError(
+                f"(Process) No serial numbers for process {self.get_class_name()}"
+            )
+        if not all(isinstance(x, str) for x in serial_numbers):
+            raise ValueError(
+                f"(Process) Not all serial numbers are strings for process {self.get_class_name()}"
+            )
+        self.work_order = work_order
+        self.serial_numbers = serial_numbers
 
-    #################
-    # Run the tasks #
-    #################
+    ##########
+    # Public #
+    ##########
+
+    @final
+    def get_class_name(self):
+        return self.__class__.__name__
 
     @final
     def run(self):

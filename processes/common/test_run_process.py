@@ -2,11 +2,11 @@
 Runs the test process.
 """
 
-def run_process(process_class):
-    work_order = "TEST_ORDER"
-    serial_numbers = ["SNR0001", "SNR002"]
+def run_process(process_class, work_order=None, serial_numbers=None):
+    work_order = "TEST_ORDER" if work_order is None else work_order
+    serial_numbers = ["SNR001", "SNR002", "SNR003"] if serial_numbers is None else serial_numbers
 
-    proc = process_class()
+    proc = process_class(work_order, serial_numbers)
     proc.run()
 
 
