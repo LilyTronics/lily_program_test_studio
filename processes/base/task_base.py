@@ -3,6 +3,7 @@ Base class for a task of a process.
 """
 
 from abc import ABC
+from abc import abstractmethod
 
 
 class TaskBase(ABC):
@@ -20,6 +21,10 @@ class TaskBase(ABC):
             raise ValueError(
                 f"(Task) Task name is not a string in task {cls.__name__}"
             )
+
+    @abstractmethod
+    def run(self):
+        pass
 
 
 if __name__ == "__main__":

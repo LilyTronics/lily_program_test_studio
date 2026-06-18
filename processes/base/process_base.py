@@ -37,6 +37,14 @@ class ProcessBase(ABC):
                 f"(Process) Not all tasks are derived from TaskBase for process {cls.__name__}"
             )
 
+    #################
+    # Run the tasks #
+    #################
+
+    def run(self):
+        for task in self.tasks:
+            task.run()
+
 
 if __name__ == "__main__":
 

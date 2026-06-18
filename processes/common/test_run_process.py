@@ -7,6 +7,7 @@ def run_process(process_class):
     serial_numbers = ["SNR0001", "SNR002"]
 
     proc = process_class()
+    proc.run()
 
 
 if __name__ == "__main__":
