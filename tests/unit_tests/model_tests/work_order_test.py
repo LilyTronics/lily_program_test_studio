@@ -43,6 +43,7 @@ class WorkOrderTest(TestSuite):
     ]
 
     def test_default_values(self):
+        WorkOrder.clear()
         for dv in self._DEFAULT_VALUES:
             value = dv[0]()
             self.log.debug(f"{dv[0].__name__}: '{value}'")

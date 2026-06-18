@@ -56,6 +56,9 @@ class WorkOrder():
         cls._data = new_data
 
     @classmethod
+    def clear(cls): cls._data.clear()
+
+    @classmethod
     def get_work_order(cls): return cls._get_value("work_order")
 
     @classmethod
