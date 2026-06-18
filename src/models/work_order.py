@@ -40,6 +40,7 @@ class WorkOrder():
 
     @classmethod
     def read_from_file(cls, filename):
+        cls.clear()
         with open(filename, "r", encoding="utf-8") as fp:
             new_data = json.load(fp)
         # Validate data
