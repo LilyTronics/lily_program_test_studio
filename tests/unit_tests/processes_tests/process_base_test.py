@@ -4,11 +4,7 @@ Test for the process base class.
 
 import os
 
-from importlib.util import module_from_spec
-from importlib.util import spec_from_file_location
-
-import src.app_data as AppData
-
+from tests.lib.import_from_processes import import_class
 from tests.lib.test_suite import TestSuite
 
 
@@ -17,17 +13,10 @@ class ProcessBaseTest(TestSuite):
     _process_base = None
 
     def _create_derived_class(self, params):
-        _ProcessTestClass = type("ProcessTest", (self._process_base, ), params)
+        _ = type("ProcessTest", (self._process_base, ), params)
 
     def setup(self):
-        filename = os.path.join(AppData.PROCESSES_PATH, "base", "process_base.py")
-        name = os.path.basename(filename).split(".")[0]
-        self.log.debug(f"Import file: {filename}")
-        spec = spec_from_file_location(name, str(filename))
-        module = module_from_spec(spec)
-        spec.loader.exec_module(module)
-        self.log.debug(f"Module loaded: {module}")
-        self._process_base = getattr(module, "ProcessBase")
+        self._process_base = import_class(os.path.join("base", "process_base.py"), "ProcessBase")
 
     def test_create_derived_class(self):
         test_params = [
@@ -68,6 +57,16 @@ class ProcessBaseTest(TestSuite):
                 self.log.debug("Exception raised as expected")
                 self.log.debug(f"Message: {e}")
                 self.fail_if(str(e) != params[1], f"Wrong message, expected: '{params[1]}'")
+
+    def test_run_process_sequential(self):
+        proc = import_class(os.path.join("test_process", "test_sequential.py"),
+                            "ProcessTestSequential")()
+        proc.run()
+
+    def test_run_process_parallel(self):
+        proc = import_class(os.path.join("test_process", "test_parallel.py"),
+                            "ProcessTestParallel")()
+        proc.run()
 
 
 if __name__ == "__main__":
