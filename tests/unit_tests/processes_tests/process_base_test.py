@@ -70,11 +70,13 @@ class ProcessBaseTest(TestSuite):
     def test_run_process_sequential(self):
         proc = import_class(os.path.join("test_process", "test_sequential.py"),
                             "ProcessTestSequential")()
+        self.fail_if(proc.n_serials_parallel > 1, "Invalid number of serials parallel")
         proc.run()
 
     def test_run_process_parallel(self):
         proc = import_class(os.path.join("test_process", "test_parallel.py"),
                             "ProcessTestParallel")()
+        self.fail_if(proc.n_serials_parallel <= 1, "Invalid number of serials parallel")
         proc.run()
 
 

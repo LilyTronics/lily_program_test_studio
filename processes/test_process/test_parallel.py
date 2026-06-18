@@ -8,8 +8,8 @@ from processes.test_process.test_task import TaskTest
 
 class ProcessTestParallel(ProcessBase):
 
-    id = "1"
     name = "Process test parallel"
+    n_serials_parallel = 2
     tasks = [TaskTest()]
 
 

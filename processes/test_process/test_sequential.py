@@ -8,7 +8,6 @@ from processes.test_process.test_task import TaskTest
 
 class ProcessTestSequential(ProcessBase):
 
-    id = "2"
     name = "Process test sequential"
     tasks = [TaskTest()]
 
