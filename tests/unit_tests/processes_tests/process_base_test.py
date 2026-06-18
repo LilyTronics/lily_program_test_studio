@@ -37,6 +37,15 @@ class ProcessBaseTest(TestSuite):
                 "(Process) No tasks for process ProcessTest"
             ),
             (
+                {"name": "Test process", "n_serials_parallel": "1"},
+                "(Process) Number of serials parallel is not an integer in process ProcessTest"
+            ),
+            (
+                {"name": "Test process", "n_serials_parallel": 0},
+                "(Process) Number of serials parallel is not greater or equal to 1 in "
+                "process ProcessTest"
+            ),
+            (
                 {"name": "Test process", "tasks" : 1234},
                 "(Process) Tasks is not a list in process ProcessTest"
             ),

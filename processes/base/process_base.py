@@ -11,6 +11,7 @@ from processes.base.task_base import TaskBase
 class ProcessBase(ABC):
 
     name = ""
+    n_serials_parallel = 1
     tasks = []
 
     def __init_subclass__(cls, **kwargs):
@@ -23,6 +24,17 @@ class ProcessBase(ABC):
         if not isinstance(cls.name, str):
             raise ValueError(
                 f"(Process) Process name is not a string in process {cls.__name__}"
+            )
+        # Number of serials in parallel
+        if not isinstance(cls.n_serials_parallel, int):
+            raise ValueError(
+                f"(Process) Number of serials parallel is not an integer in process {cls.__name__}"
+            )
+        # Number of serials in parallel
+        if cls.n_serials_parallel < 1:
+            raise ValueError(
+                "(Process) Number of serials parallel is not greater or equal to 1 "
+                f"in process {cls.__name__}"
             )
         # Tasks
         if not isinstance(cls.tasks, list):
@@ -37,6 +49,7 @@ class ProcessBase(ABC):
             raise ValueError(
                 f"(Process) Not all tasks are derived from TaskBase for process {cls.__name__}"
             )
+
 
     #################
     # Run the tasks #
