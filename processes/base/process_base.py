@@ -3,6 +3,7 @@ Base class for a process.
 """
 
 from abc import ABC
+from typing import final
 
 from processes.base.task_base import TaskBase
 
@@ -41,6 +42,7 @@ class ProcessBase(ABC):
     # Run the tasks #
     #################
 
+    @final
     def run(self):
         for task in self.tasks:
             task.run()
