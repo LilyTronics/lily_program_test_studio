@@ -121,7 +121,7 @@ class ProcessBase(ABC):
 
     def _run_tasks(self, serial):
         for task in self.tasks:
-            task.run(serial)
+            task.run(serial["serial_number"], serial["logger"])
 
     ##########
     # Public #

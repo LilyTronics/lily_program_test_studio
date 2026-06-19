@@ -154,17 +154,19 @@ class ProcessBaseTest(TestSuite):
                 self.log.debug(f"Message: {e}")
                 self.fail_if(str(e) != params[1], f"Wrong message, expected: '{params[1]}'")
 
-    # def test_run_process_sequential(self):
-    #     proc = import_class(os.path.join("test_process", "test_sequential.py"),
-    #                         "ProcessTestSequential")(self.WORK_ORDER)
-    #     self.fail_if(proc.n_serials_parallel > 1, "Invalid number of serials parallel")
-    #     proc.run(self.SERIALS)
+    def test_run_process_sequential(self):
+        serials = [{"serial_number": s, "logger": self.log} for s in self.SERIALS]
+        proc = import_class(os.path.join("test_process", "test_sequential.py"),
+                            "ProcessTestSequential")(self.WORK_ORDER)
+        self.fail_if(proc.n_serials_parallel > 1, "Invalid number of serials parallel")
+        proc.run(serials[0:proc.n_serials_parallel])
 
-    # def test_run_process_parallel(self):
-    #     proc = import_class(os.path.join("test_process", "test_parallel.py"),
-    #                         "ProcessTestParallel")(self.WORK_ORDER)
-    #     self.fail_if(proc.n_serials_parallel <= 1, "Invalid number of serials parallel")
-    #     proc.run(self.SERIALS)
+    def test_run_process_parallel(self):
+        serials = [{"serial_number": s, "logger": self.log} for s in self.SERIALS]
+        proc = import_class(os.path.join("test_process", "test_parallel.py"),
+                            "ProcessTestParallel")(self.WORK_ORDER)
+        self.fail_if(proc.n_serials_parallel <= 1, "Invalid number of serials parallel")
+        proc.run(serials[0:proc.n_serials_parallel])
 
 
 if __name__ == "__main__":

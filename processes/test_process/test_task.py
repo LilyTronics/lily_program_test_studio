@@ -11,11 +11,11 @@ class TaskTest(TaskBase):
 
     name = "Test task"
 
-    def run(self, serial_number):
-        print("run task:", self.__class__.__name__, "for serial:", serial_number)
-        print("Sleep several seconds")
+    def run(self, serial_number, logger):
+        logger.info(f"Run task: {self.name} for {serial_number}")
+        logger.debug("Sleep several seconds")
         time.sleep(3)
-        print("Done")
+        logger.debug("Done")
 
 
 if __name__ == "__main__":
