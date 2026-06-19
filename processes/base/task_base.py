@@ -23,7 +23,7 @@ class TaskBase(ABC):
             )
 
     @abstractmethod
-    def run(self):
+    def run(self, serial_number):
         pass
 
 
