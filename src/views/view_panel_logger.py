@@ -23,16 +23,16 @@ class ViewPanelLogger(wx.Panel):
 
     def __init__(self, parent, filename=""):
         super().__init__(parent, wx.ID_ANY)
-        self._filename = filename
-
         self._console = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_DONTWRAP | wx.TE_READONLY |
                                     wx.TE_RICH)
         self._console.SetFont(wx.Font(9, wx.FONTFAMILY_TELETYPE, wx.FONTSTYLE_NORMAL,
                                      wx.FONTWEIGHT_NORMAL, False))
 
-        self._update_timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self._on_update_timer, self._update_timer)
-        self._update_timer.Start(self._UPDATE_TIME)
+        self._filename = filename
+        if os.path.isfile(self._filename):
+            self._update_timer = wx.Timer(self)
+            self.Bind(wx.EVT_TIMER, self._on_update_timer, self._update_timer)
+            self._update_timer.Start(self._UPDATE_TIME)
 
         box = wx.BoxSizer(wx.VERTICAL)
         box.Add(self._console, 1, wx.EXPAND)

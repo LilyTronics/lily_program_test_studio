@@ -7,11 +7,16 @@ import wx
 import src.app_data as AppData
 
 from src.controllers.controller_main import ControllerMain
+from src.models.console_redirect import ConsoleRedirect
 from src.models.logger import Logger
 
 
 def run_main(log_to_stdout=False):
-    logger = Logger(AppData.APP_LOG_FILE, log_to_stdout)
+    logger = Logger()
+    logger.add_handler(open(AppData.APP_LOG_FILE, "w", encoding="utf-8"))
+    ConsoleRedirect.add_logger(logger)
+    if log_to_stdout:
+        logger.add_handler(ConsoleRedirect.org_stdout)
     logger.info("Application started")
     logger.info(f"Application path    : {AppData.APP_PATH}")
     logger.info(f"Processes path      : {AppData.PROCESSES_PATH}")
@@ -23,7 +28,7 @@ def run_main(log_to_stdout=False):
     app.MainLoop()
 
     logger.info("Application stopped")
-    logger.shut_down()
+
 
 if __name__ == "__main__":
 
