@@ -11,6 +11,7 @@ class ConsoleRedirect:
     TYPE_STDERR = "stderr"
 
     org_stdout = sys.stdout
+    org_stderr = sys.stderr
 
     _loggers = {
         TYPE_STDOUT: [],
@@ -19,6 +20,16 @@ class ConsoleRedirect:
 
     def __init__(self):
         raise Exception("This class should not be instantiated")
+
+    @classmethod
+    def enable_redirect(cls):
+        sys.stdout = _StdLogger(cls.TYPE_STDOUT)
+        sys.stderr = _StdLogger(cls.TYPE_STDERR)
+
+    @classmethod
+    def restore_redirect(cls):
+        sys.stdout = cls.org_stdout
+        sys.stderr = cls.org_stderr
 
     @classmethod
     def add_logger(cls, logger):
@@ -44,11 +55,6 @@ class _StdLogger:
     def flush(self): pass
 
 
-# Redirect
-sys.stdout = _StdLogger(ConsoleRedirect.TYPE_STDOUT)
-sys.stderr = _StdLogger(ConsoleRedirect.TYPE_STDERR)
-
-
 if __name__ == "__main__":
 
     import threading
@@ -58,6 +64,7 @@ if __name__ == "__main__":
     def _generate_error():
         _ = 1 / 0
 
+    ConsoleRedirect.enable_redirect()
 
     log = Logger()
     log.add_handler(open("temp/test.log", "w", encoding="utf-8"))
@@ -69,3 +76,5 @@ if __name__ == "__main__":
     t = threading.Thread(target=_generate_error, daemon=True)
     t.start()
     while t.is_alive(): pass
+
+    ConsoleRedirect.restore_redirect()

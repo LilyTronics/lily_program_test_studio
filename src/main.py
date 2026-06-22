@@ -14,6 +14,7 @@ from src.models.logger import Logger
 def run_main(log_to_stdout=False):
     logger = Logger()
     logger.add_handler(open(AppData.APP_LOG_FILE, "w", encoding="utf-8"))
+    ConsoleRedirect.enable_redirect()
     ConsoleRedirect.add_logger(logger)
     if log_to_stdout:
         logger.add_handler(ConsoleRedirect.org_stdout)
@@ -28,6 +29,7 @@ def run_main(log_to_stdout=False):
     app.MainLoop()
 
     logger.info("Application stopped")
+    ConsoleRedirect.restore_redirect()
 
 
 if __name__ == "__main__":
