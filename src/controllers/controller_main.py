@@ -114,7 +114,13 @@ class ControllerMain:
 
     def _on_start(self, event):
         settings = self._view.get_settings()
-        wx.CallAfter(ProcessRunner.run_process, settings)
+        try:
+            settings["output_folder"] = WorkOrder.get_output_folder()
+            ProcessRunner.run_process(settings)
+        except Exception as e:
+            self._log.error(f"Error running process: {e}")
+            ViewDialogs.show_message(self._view, f"Error running process: {e}",
+                                        "Run process", wx.ICON_EXCLAMATION)
         event.Skip()
 
     def _on_view_close(self, event):
