@@ -24,7 +24,7 @@ class ViewFrameMain(wx.Frame):
 
         box = wx.BoxSizer(wx.VERTICAL)
         box.Add(self._create_input_controls(panel), 2, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
-        box.Add(self._create_start_button(panel), 0, wx.ALIGN_CENTER | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._create_buttons(panel), 0, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
         box.Add(self._create_console(panel), 3, wx.EXPAND | wx.ALL, GuiSizes.BOX_SPACING)
 
         panel.SetSizer(box)
@@ -63,11 +63,19 @@ class ViewFrameMain(wx.Frame):
 
         return grid
 
-    def _create_start_button(self, parent):
-        btn_start = wx.Button(parent, IdManager.ID_BTN_START, "START", size=(200, 50))
+    def _create_buttons(self, parent):
+        btn_start = wx.Button(parent, IdManager.ID_BTN_RUN, "RUN", size=(200, 50))
         btn_start.SetFont(wx.Font(
             14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
-        return btn_start
+        btn_abort = wx.Button(parent, IdManager.ID_BTN_ABORT, "ABORT", size=(100, 40))
+        btn_abort.SetFont(wx.Font(
+            12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        box = wx.BoxSizer(wx.HORIZONTAL)
+        box.AddStretchSpacer(1)
+        box.Add(btn_start, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
+        box.AddStretchSpacer(1)
+        box.Add(btn_abort, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
+        return box
 
     def _create_console(self, parent):
         nb = wx.Notebook(parent)

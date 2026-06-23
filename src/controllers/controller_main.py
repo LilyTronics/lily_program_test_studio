@@ -43,7 +43,7 @@ class ControllerMain:
         self._view.Bind(wx.EVT_BUTTON, self._on_add_serial, id=IdManager.ID_BTN_ADD_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_del_serial, id=IdManager.ID_BTN_DEL_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
-        self._view.Bind(wx.EVT_BUTTON, self._on_start, id=IdManager.ID_BTN_START)
+        self._view.Bind(wx.EVT_BUTTON, self._on_start, id=IdManager.ID_BTN_RUN)
 
     def _load_processes(self):
         dlg_title = "Loading processes"
