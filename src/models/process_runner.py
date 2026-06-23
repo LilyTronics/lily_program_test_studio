@@ -6,7 +6,10 @@ The process is run in a separate thread to make sure the GUI is not freezing.
 """
 
 import threading
+import traceback
 
+from src.models.console_redirect import ConsoleRedirect
+from src.models.logger import Logger
 from src.models.process_registry import ProcessesRegistry
 
 
@@ -45,8 +48,29 @@ class ProcessRunner:
             raise ValueError("The output folder must be a string")
 
     @classmethod
+    def _create_logger(cls, log_to_stdout):
+        logger = Logger()
+        ConsoleRedirect.add_logger(logger)
+        if log_to_stdout:
+            logger.add_handler(ConsoleRedirect.org_stdout)
+        return logger
+
+    @classmethod
     def _process_thread(cls, settings):
-        print(settings)
+        try:
+            proc_logger = cls._create_logger(True)
+            process = ProcessesRegistry.get_process(settings["process"])(settings["work_order"])
+            proc_logger.info(f"Run process: {process.name}")
+            proc_logger.info(f"Total serial numbers: {len(settings["serial_numbers"])}")
+            # Call run for a batch of serial numbers depending on process
+            for i in range(0, len(settings["serial_numbers"]), process.n_serials_parallel):
+                batch = [
+                    {"serial_number": s, "logger": cls._create_logger(True)}
+                    for s in settings["serial_numbers"][i:i + process.n_serials_parallel]
+                ]
+                process.run(batch)
+        except Exception:
+            proc_logger.error(f"Exception when running process:\n{traceback.format_exc().strip()}")
 
     ##########
     # Public #

@@ -51,6 +51,7 @@ class ProcessRunnerTest(TestSuite):
             "serial_numbers": WorkOrder.get_serial_numbers(),
             "output_folder": WorkOrder.get_output_folder()
         })
+        self.wait_for(ProcessRunner.is_running, False, 60, 1)
 
 
 if __name__ == "__main__":
