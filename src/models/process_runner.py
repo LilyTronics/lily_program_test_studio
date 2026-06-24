@@ -16,6 +16,7 @@ from src.models.process_registry import ProcessesRegistry
 class ProcessRunner:
 
     _thread = None
+    _stop_event = threading.Event()
 
     def __init__(self):
         raise Exception("This class should not be instantiated")
@@ -68,7 +69,11 @@ class ProcessRunner:
                     {"serial_number": s, "logger": cls._create_logger(True)}
                     for s in settings["serial_numbers"][i:i + process.n_serials_parallel]
                 ]
-                process.run(batch)
+                process.run(batch, cls._stop_event)
+                if cls._stop_event.is_set():
+                    proc_logger.info("Process is aborted")
+                    break
+
         except Exception:
             proc_logger.error(f"Exception when running process:\n{traceback.format_exc().strip()}")
 
@@ -81,9 +86,14 @@ class ProcessRunner:
         if cls.is_running():
             raise Exception("A process is already running")
         cls._check_settings(settings)
+        cls._stop_event.clear()
         cls._thread = threading.Thread(target=cls._process_thread, args=(settings, ))
         cls._thread.daemon = True
         cls._thread.start()
+
+    @classmethod
+    def abort(cls):
+        cls._stop_event.set()
 
     @classmethod
     def is_running(cls):

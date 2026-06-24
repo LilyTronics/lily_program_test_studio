@@ -60,9 +60,11 @@ class ProcessBase(ABC):
     # Private #
     ###########
 
-    def _run_tasks(self, serial):
+    def _run_tasks(self, serial, stop_event):
         for task in self.tasks:
             task.run(serial["serial_number"], serial["logger"])
+            if stop_event.is_set():
+                break
 
     ##########
     # Public #
@@ -73,14 +75,16 @@ class ProcessBase(ABC):
         return self.__class__.__name__
 
     @final
-    def run(self, serial_numbers):
+    def run(self, serial_numbers, stop_event):
         threads = []
         for serial in serial_numbers:
-            t = threading.Thread(target=self._run_tasks, args=(serial,), daemon=True)
+            t = threading.Thread(target=self._run_tasks, args=(serial, stop_event), daemon=True)
             t.start()
             threads.append(t)
 
         while len([t for t in threads if t.is_alive()]) > 0:
+            if stop_event.is_set():
+                break
             time.sleep(0.1)
 
 

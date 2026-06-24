@@ -44,6 +44,7 @@ class ControllerMain:
         self._view.Bind(wx.EVT_BUTTON, self._on_del_serial, id=IdManager.ID_BTN_DEL_SERIAL)
         self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
         self._view.Bind(wx.EVT_BUTTON, self._on_start, id=IdManager.ID_BTN_RUN)
+        self._view.Bind(wx.EVT_BUTTON, self._on_abort, id=IdManager.ID_BTN_ABORT)
 
     def _load_processes(self):
         dlg_title = "Loading processes"
@@ -116,11 +117,17 @@ class ControllerMain:
         settings = self._view.get_settings()
         try:
             settings["output_folder"] = WorkOrder.get_output_folder()
+            self._log.info(f"Run process: '{settings["process"]}'")
             ProcessRunner.run_process(settings)
         except Exception as e:
             self._log.error(f"Error running process: {e}")
             ViewDialogs.show_message(self._view, f"Error running process: {e}",
                                         "Run process", wx.ICON_EXCLAMATION)
+        event.Skip()
+
+    def _on_abort(self, event):
+        self._log.info("Abort process")
+        ProcessRunner.abort()
         event.Skip()
 
     def _on_view_close(self, event):
