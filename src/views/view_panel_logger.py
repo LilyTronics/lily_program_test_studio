@@ -53,13 +53,17 @@ class ViewPanelLogger(wx.Panel):
         n_lines = self._console.GetValue().count("\n")
         lines = lines[n_lines:]
         for line in lines:
-            for key, value in self._TEXT_COLORS.items():
-                if f" | {key:6} | " in line:
-                    self._console.SetDefaultStyle(wx.TextAttr(value))
-                    break
-            else:
-                self._console.SetDefaultStyle(wx.TextAttr(self._COLOR_DEFAULT))
-            self._console.AppendText(line)
+            self._add_line(line)
+        self._console.Refresh()
+
+    def _add_line(self, line):
+        for key, value in self._TEXT_COLORS.items():
+            if f" | {key:6} | " in line:
+                self._console.SetDefaultStyle(wx.TextAttr(value))
+                break
+        else:
+            self._console.SetDefaultStyle(wx.TextAttr(self._COLOR_DEFAULT))
+        self._console.AppendText(line)
 
     ##################
     # Event handlers #
@@ -68,6 +72,21 @@ class ViewPanelLogger(wx.Panel):
     def _on_update_timer(self, event):
         self._show_messages()
         event.Skip()
+
+    ######################################
+    # Methods to use this as log handler #
+    ######################################
+
+    def write(self, message): wx.CallAfter(self._add_line, message)
+    def flush(self): wx.CallAfter(self._console.Refresh)
+
+    ##########
+    # Public #
+    ##########
+
+    def clear(self):
+        self._console.Clear()
+        self._console.Refresh()
 
 
 if __name__ == "__main__":
@@ -79,4 +98,13 @@ if __name__ == "__main__":
     f.SetInitialSize((800, 600))
     log = ViewPanelLogger(f, AppData.APP_LOG_FILE)
     f.Show()
+
+    # Using log handler
+    log.write("2026-06-24 20:10:14.630 | INFO   | This is an info message\n")
+    log.write("2026-06-24 20:10:14.630 | DEBUG  | This is a debug message\n")
+    log.write("2026-06-24 20:10:14.630 | ERROR  | This is a error message\n")
+    log.write("2026-06-24 20:10:14.630 | STDOUT | This is a stdout message\n")
+    log.write("2026-06-24 20:10:14.630 | STDERR | This is a stderr message\n")
+    log.flush()
+
     app.MainLoop()

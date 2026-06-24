@@ -5,6 +5,7 @@ Runs the process for a work order.
 The process is run in a separate thread to make sure the GUI is not freezing.
 """
 
+import inspect
 import threading
 import time
 import traceback
@@ -49,27 +50,45 @@ class ProcessRunner:
             raise ValueError("The output folder is not defined")
         if not isinstance(settings["output_folder"], str):
             raise ValueError("The output folder must be a string")
+        if settings.get("view_log_handler") is not None:
+            log_methods = [("write", 1), ("flush", 0)]
+            # Check if logger class instance has the correct methods
+            for log_method in log_methods:
+                attribute = getattr(settings["view_log_handler"], log_method[0], None)
+                if not callable(attribute):
+                    raise ValueError(
+                        f"The view logger is missing callable method '{log_method[0]}'"
+                    )
+                sig = inspect.signature(attribute)
+                params = sig.parameters
+                if len(params) != log_method[1]:
+                    raise ValueError(
+                        f"Method {log_method[0]} for the view logger "
+                        f"must have {log_method[1]} parameters"
+                    )
 
     @classmethod
-    def _create_logger(cls, log_to_stdout):
+    def _create_logger(cls, view_handler):
         logger = Logger()
         ConsoleRedirect.add_logger(logger)
-        if log_to_stdout:
-            logger.add_handler(ConsoleRedirect.org_stdout)
+        if view_handler is not None:
+            logger.add_handler(view_handler)
         return logger
 
     @classmethod
     def _process_thread(cls, settings):
         cls._start_time = int(time.time())
         try:
-            proc_logger = cls._create_logger(True)
+            proc_logger = cls._create_logger(settings.get("view_log_handler", None))
             process = ProcessesRegistry.get_process(settings["process"])(settings["work_order"])
             proc_logger.info(f"Run process: {process.name}")
             proc_logger.info(f"Total serial numbers: {len(settings["serial_numbers"])}")
             # Call run for a batch of serial numbers depending on process
             for i in range(0, len(settings["serial_numbers"]), process.n_serials_parallel):
-                batch = [
-                    {"serial_number": s, "logger": cls._create_logger(True)}
+                batch = [{
+                    "serial_number": s,
+                    "logger": cls._create_logger(settings.get("view_log_handler", None))
+                    }
                     for s in settings["serial_numbers"][i:i + process.n_serials_parallel]
                 ]
                 process.run(batch, cls._stop_event)

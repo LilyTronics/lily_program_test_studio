@@ -6,6 +6,7 @@ import wx
 
 import src.app_data as AppData
 import src.models.id_manager as IdManager
+from src.models.time_converter import TimeConverter
 import src.views.gui_sizes as GuiSizes
 
 from src.views.view_list_autosize import ListAutosize
@@ -94,12 +95,12 @@ class ViewFrameMain(wx.Frame):
         return box
 
     def _create_console(self, parent):
-        nb = wx.Notebook(parent)
-        app_log = ViewPanelLogger(nb, AppData.APP_LOG_FILE)
-        proc_log = ViewPanelLogger(nb)
-        nb.AddPage(app_log, "Application log")
-        nb.AddPage(proc_log, "Process log")
-        return nb
+        self._nb = wx.Notebook(parent)
+        app_log = ViewPanelLogger(self._nb, AppData.APP_LOG_FILE)
+        self._proc_log = ViewPanelLogger(self._nb)
+        self._nb.AddPage(app_log, "Application log")
+        self._nb.AddPage(self._proc_log, "Process log")
+        return self._nb
 
     ##########
     # Public #
@@ -145,7 +146,8 @@ class ViewFrameMain(wx.Frame):
             "serial_numbers": [
                 self._lst_serials.GetItemText(i)
                 for i in range(self._lst_serials.GetItemCount())
-            ]
+            ],
+            "view_log_handler": self._proc_log
         }
 
     def enable_controls(self, enable):
@@ -164,9 +166,16 @@ class ViewFrameMain(wx.Frame):
             self._activity_led.Refresh()
 
     def update_status(self, duration):
+        duration = TimeConverter.create_duration_time_string(duration)
         self._lbl_status.SetLabel(f"Duration: {duration}")
         self._lbl_status.Refresh()
 
+    def show_process_log(self):
+        self._nb.SetSelection(1)
+        self._nb.Refresh()
+
+    def clear_process_log(self):
+        self._proc_log.clear()
 
 if __name__ == "__main__":
 
