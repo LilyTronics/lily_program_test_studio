@@ -14,8 +14,12 @@ from src.views.view_panel_logger import ViewPanelLogger
 
 class ViewFrameMain(wx.Frame):
 
+    LED_COLOR_OFF = "#060"
+    LED_COLOR_ON = "#0f0"
+
     # Minimum screen resolution: 1366×768 / 1280x720 (still used on older laptops, anno 2026)
     _MIN_WINDOW_SIZE = (1000, 700)
+    _LED_SIZE = (24, 24)
 
     def __init__(self, title):
         super().__init__(None, title=title)
@@ -30,12 +34,15 @@ class ViewFrameMain(wx.Frame):
         panel.SetSizer(box)
         self.SetInitialSize(self._MIN_WINDOW_SIZE)
 
+    ###########
+    # Private #
+    ###########
 
     def _create_input_controls(self, parent):
-        btn_load_wo = wx.Button(parent, IdManager.ID_BTN_LOAD_WO, "Load work order")
-        btn_add_snr = wx.Button(parent, IdManager.ID_BTN_ADD_SERIAL, "Add serial number")
-        btn_del_snr = wx.Button(parent, IdManager.ID_BTN_DEL_SERIAL, "Remove serial number")
-        btn_clear = wx.Button(parent, IdManager.ID_BTN_CLEAR, "Clear input")
+        self._btn_load_wo = wx.Button(parent, IdManager.ID_BTN_LOAD_WO, "Load work order")
+        self._btn_add_snr = wx.Button(parent, IdManager.ID_BTN_ADD_SERIAL, "Add serial number")
+        self._btn_del_snr = wx.Button(parent, IdManager.ID_BTN_DEL_SERIAL, "Remove serial number")
+        self._btn_clear = wx.Button(parent, IdManager.ID_BTN_CLEAR, "Clear input")
 
         lbl_work_order = wx.StaticText(parent, wx.ID_ANY, "Work order:")
         self._txt_work_order = wx.TextCtrl(parent, size=GuiSizes.WIDTH_LARGE)
@@ -46,10 +53,10 @@ class ViewFrameMain(wx.Frame):
         self._lst_serials.add_cols(["Serial number"], [0])
 
         grid = wx.GridBagSizer(*GuiSizes.GRID_SPACING)
-        grid.Add(btn_load_wo, (0, 0), wx.DefaultSpan)
-        grid.Add(btn_add_snr, (0, 2), wx.DefaultSpan)
-        grid.Add(btn_del_snr, (0, 3), wx.DefaultSpan)
-        grid.Add(btn_clear, (0, 4), wx.DefaultSpan)
+        grid.Add(self._btn_load_wo, (0, 0), wx.DefaultSpan)
+        grid.Add(self._btn_add_snr, (0, 2), wx.DefaultSpan)
+        grid.Add(self._btn_del_snr, (0, 3), wx.DefaultSpan)
+        grid.Add(self._btn_clear, (0, 4), wx.DefaultSpan)
 
         grid.Add(lbl_work_order, (2, 0), wx.DefaultSpan)
         grid.Add(self._txt_work_order, (3, 0), wx.DefaultSpan)
@@ -64,17 +71,26 @@ class ViewFrameMain(wx.Frame):
         return grid
 
     def _create_buttons(self, parent):
-        btn_start = wx.Button(parent, IdManager.ID_BTN_RUN, "RUN", size=(200, 50))
-        btn_start.SetFont(wx.Font(
+        self._activity_led = wx.Panel(parent, wx.ID_ANY, size=self._LED_SIZE,
+                                      style=wx.BORDER_SIMPLE)
+        self._activity_led.SetBackgroundColour(self.LED_COLOR_OFF)
+        self._btn_run = wx.Button(parent, IdManager.ID_BTN_RUN, "RUN", size=(200, 50))
+        self._btn_run.SetFont(wx.Font(
             14, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
-        btn_abort = wx.Button(parent, IdManager.ID_BTN_ABORT, "ABORT", size=(100, 40))
-        btn_abort.SetFont(wx.Font(
+        self._btn_abort = wx.Button(parent, IdManager.ID_BTN_ABORT, "ABORT", size=(100, 40))
+        self._btn_abort.SetFont(wx.Font(
             12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self._lbl_status = wx.StaticText(parent)
+        self._lbl_status.SetFont(wx.Font(
+            12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+
         box = wx.BoxSizer(wx.HORIZONTAL)
-        box.AddStretchSpacer(1)
-        box.Add(btn_start, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
-        box.AddStretchSpacer(1)
-        box.Add(btn_abort, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._btn_run, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._activity_led, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
+        box.Add(self._lbl_status, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL,
+                GuiSizes.BOX_SPACING)
+        box.Add(self._btn_abort, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, GuiSizes.BOX_SPACING)
+
         return box
 
     def _create_console(self, parent):
@@ -132,9 +148,28 @@ class ViewFrameMain(wx.Frame):
             ]
         }
 
+    def enable_controls(self, enable):
+        self._btn_load_wo.Enable(enable)
+        self._txt_work_order.Enable(enable)
+        self._cmb_process.Enable(enable)
+        self._btn_add_snr.Enable(enable)
+        self._btn_del_snr.Enable(enable)
+        self._btn_clear.Enable(enable)
+        self._btn_run.Enable(enable)
+        self._btn_abort.Enable(not enable)
+
+    def set_led_color(self, color):
+        if color in [self.LED_COLOR_ON, self.LED_COLOR_OFF]:
+            self._activity_led.SetBackgroundColour(color)
+            self._activity_led.Refresh()
+
+    def update_status(self, duration):
+        self._lbl_status.SetLabel(f"Duration: {duration}")
+        self._lbl_status.Refresh()
+
 
 if __name__ == "__main__":
 
     from src.main import run_main
 
-    run_main()
+    run_main(True)

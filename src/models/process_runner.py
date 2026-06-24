@@ -6,6 +6,7 @@ The process is run in a separate thread to make sure the GUI is not freezing.
 """
 
 import threading
+import time
 import traceback
 
 from src.models.console_redirect import ConsoleRedirect
@@ -17,6 +18,7 @@ class ProcessRunner:
 
     _thread = None
     _stop_event = threading.Event()
+    _start_time = 0
 
     def __init__(self):
         raise Exception("This class should not be instantiated")
@@ -58,6 +60,7 @@ class ProcessRunner:
 
     @classmethod
     def _process_thread(cls, settings):
+        cls._start_time = int(time.time())
         try:
             proc_logger = cls._create_logger(True)
             process = ProcessesRegistry.get_process(settings["process"])(settings["work_order"])
@@ -98,6 +101,12 @@ class ProcessRunner:
     @classmethod
     def is_running(cls):
         return cls._thread is not None and cls._thread.is_alive()
+
+    @classmethod
+    def get_duration_time(cls):
+        if cls._start_time > 0:
+            return int(time.time()) - cls._start_time
+        return 0
 
 
 if __name__ == "__main__":

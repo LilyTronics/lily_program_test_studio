@@ -9,6 +9,7 @@ import src.models.id_manager as IdManager
 from src.models.application_settings import ApplicationSettings
 from src.models.process_registry import ProcessesRegistry
 from src.models.process_runner import ProcessRunner
+from src.models.time_converter import TimeConverter
 from src.models.work_order import WorkOrder
 from src.views.view_dialog_progress import ViewDialogProgress
 from src.views.view_dialogs import ViewDialogs
@@ -17,8 +18,13 @@ from src.views.view_frame_main import ViewFrameMain
 
 class ControllerMain:
 
+    _TIMER_SPEED = 100
+    _BLINK_SPEED = 5
+
     def __init__(self, title, logger):
         self._log = logger
+        self._blink_ticks = 0
+        self._last_led_color = None
         self._app_settings = ApplicationSettings()
         self._view = ViewFrameMain(title)
         self._prepare_view()
@@ -45,6 +51,12 @@ class ControllerMain:
         self._view.Bind(wx.EVT_BUTTON, self._on_clear, id=IdManager.ID_BTN_CLEAR)
         self._view.Bind(wx.EVT_BUTTON, self._on_start, id=IdManager.ID_BTN_RUN)
         self._view.Bind(wx.EVT_BUTTON, self._on_abort, id=IdManager.ID_BTN_ABORT)
+
+        self._update_timer = wx.Timer()
+        self._update_timer.Bind(wx.EVT_TIMER, self._on_update_timer)
+        self._update_timer.Start(self._TIMER_SPEED)
+
+        self._view.enable_controls(True)
 
     def _load_processes(self):
         dlg_title = "Loading processes"
@@ -119,6 +131,7 @@ class ControllerMain:
             settings["output_folder"] = WorkOrder.get_output_folder()
             self._log.info(f"Run process: '{settings["process"]}'")
             ProcessRunner.run_process(settings)
+            self._view.enable_controls(False)
         except Exception as e:
             self._log.error(f"Error running process: {e}")
             ViewDialogs.show_message(self._view, f"Error running process: {e}",
@@ -128,6 +141,28 @@ class ControllerMain:
     def _on_abort(self, event):
         self._log.info("Abort process")
         ProcessRunner.abort()
+        event.Skip()
+
+    def _on_update_timer(self, event):
+        enable = True
+        duration = 0
+        if ProcessRunner.is_running():
+            enable = False
+            if self._blink_ticks == self._BLINK_SPEED:
+                if self._last_led_color == self._view.LED_COLOR_ON:
+                    self._last_led_color = self._view.LED_COLOR_OFF
+                else:
+                    self._last_led_color = self._view.LED_COLOR_ON
+                self._blink_ticks = 0
+            else:
+                self._blink_ticks += 1
+            duration = ProcessRunner.get_duration_time()
+        else:
+            self._last_led_color = self._view.LED_COLOR_OFF
+
+        self._view.set_led_color(self._last_led_color)
+        self._view.enable_controls(enable)
+        self._view.update_status(TimeConverter.create_duration_time_string(duration))
         event.Skip()
 
     def _on_view_close(self, event):
