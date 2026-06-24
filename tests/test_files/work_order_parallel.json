@@ -1,0 +1,18 @@
+{
+    "work_order": "WO-PARALLEL",
+    "process": "Process test parallel",
+    "serial_numbers": [
+        "SNR001",
+        "SNR002",
+        "SNR003",
+        "SNR004",
+        "SNR005",
+        "SNR006",
+        "SNR007",
+        "SNR008",
+        "SNR009",
+        "SNR010"
+    ],
+    "auto_start": false,
+    "output_folder": "C:\\Work\\lily_prog_test"
+}
