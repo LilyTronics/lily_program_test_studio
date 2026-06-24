@@ -3,6 +3,7 @@ Test for the process base class.
 """
 
 import os
+import threading
 
 from tests.lib.import_from_processes import import_class
 from tests.lib.test_suite import TestSuite
@@ -82,14 +83,14 @@ class ProcessBaseTest(TestSuite):
         proc = import_class(os.path.join("test_process", "test_sequential.py"),
                             "ProcessTestSequential")(self.WORK_ORDER)
         self.fail_if(proc.n_serials_parallel > 1, "Invalid number of serials parallel")
-        proc.run(serials[0:proc.n_serials_parallel])
+        proc.run(serials[0:proc.n_serials_parallel], threading.Event())
 
     def test_run_process_parallel(self):
         serials = [{"serial_number": s, "logger": self.log} for s in self.SERIALS]
         proc = import_class(os.path.join("test_process", "test_parallel.py"),
                             "ProcessTestParallel")(self.WORK_ORDER)
         self.fail_if(proc.n_serials_parallel <= 1, "Invalid number of serials parallel")
-        proc.run(serials[0:proc.n_serials_parallel])
+        proc.run(serials[0:proc.n_serials_parallel], threading.Event())
 
 
 if __name__ == "__main__":
