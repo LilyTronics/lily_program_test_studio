@@ -2,6 +2,7 @@
 Our own test suite class derived from the lily-unit-test test suite.
 """
 
+import os
 import lily_unit_test
 
 
@@ -25,8 +26,12 @@ class TestSuite(lily_unit_test.TestSuite):
     def __init__(self, *args):
         super().__init__(*args)
         self.app_test_logger = self._TestLogger(self.log)
+        self.temp_folder = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), *([".."] * 2), "temp")
+        )
 
 
 if __name__ == "__main__":
 
     ts = TestSuite()
+    print(ts.temp_folder)
