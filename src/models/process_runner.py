@@ -10,6 +10,8 @@ import threading
 import time
 import traceback
 
+import src.models.reports_path as ReportsPath
+
 from src.models.console_redirect import ConsoleRedirect
 from src.models.logger import Logger
 from src.models.process_registry import ProcessesRegistry
@@ -77,25 +79,31 @@ class ProcessRunner:
 
     @classmethod
     def _process_thread(cls, settings):
+        proc_logger = cls._create_logger(settings.get("view_log_handler", None))
         cls._start_time = int(time.time())
         try:
-            proc_logger = cls._create_logger(settings.get("view_log_handler", None))
+            base_filename = ReportsPath.create_work_order_path(
+                settings["output_folder"], settings["work_order"], cls._start_time
+            )
+            proc_logger.add_handler(open(f"{base_filename}.log", "w", encoding="utf-8"))
             process = ProcessesRegistry.get_process(settings["process"])(settings["work_order"])
             proc_logger.info(f"Run process: {process.name}")
             proc_logger.info(f"Total serial numbers: {len(settings["serial_numbers"])}")
             # Call run for a batch of serial numbers depending on process
             for i in range(0, len(settings["serial_numbers"]), process.n_serials_parallel):
+                serials = settings["serial_numbers"][i:i + process.n_serials_parallel]
+                proc_logger.debug(f"Run tasks for: {", ".join(serials)}")
                 batch = [{
                     "serial_number": s,
                     "logger": cls._create_logger(settings.get("view_log_handler", None))
                     }
-                    for s in settings["serial_numbers"][i:i + process.n_serials_parallel]
+                    for s in serials
                 ]
                 process.run(batch, cls._stop_event)
                 if cls._stop_event.is_set():
                     proc_logger.info("Process is aborted")
                     break
-
+            proc_logger.info("Process finished")
         except Exception:
             proc_logger.error(f"Exception when running process:\n{traceback.format_exc().strip()}")
 
