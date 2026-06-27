@@ -61,10 +61,17 @@ class ProcessBase(ABC):
     ###########
 
     def _run_tasks(self, serial, stop_event):
+        logger = serial["logger"]
+        logger.info(f"Run process: {self.name}")
+        logger.info(f"Run tasks for: {serial["serial_number"]}")
         for task in self.tasks:
-            task.run(serial["serial_number"], serial["logger"])
+            task.run(serial["serial_number"], logger)
             if stop_event.is_set():
                 break
+        if stop_event.is_set():
+            logger.info("Process aborted")
+        else:
+            logger.info("Process finished")
 
     ##########
     # Public #

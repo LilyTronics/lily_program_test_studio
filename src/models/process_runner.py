@@ -70,16 +70,21 @@ class ProcessRunner:
                     )
 
     @classmethod
-    def _create_logger(cls, view_handler):
+    def _create_logger(cls, settings, serial_number=None, timestamp=None):
         logger = Logger()
         ConsoleRedirect.add_logger(logger)
-        if view_handler is not None:
-            logger.add_handler(view_handler)
+        if settings.get("view_log_handler", None) is not None:
+            logger.add_handler(settings["view_log_handler"])
+        if serial_number is not None and timestamp is not None:
+            base_filename = ReportsPath.create_serial_number_path(
+                settings["output_folder"], serial_number, timestamp
+            )
+            logger.add_handler(open(f"{base_filename}.log", "w", encoding="utf-8"))
         return logger
 
     @classmethod
     def _process_thread(cls, settings):
-        proc_logger = cls._create_logger(settings.get("view_log_handler", None))
+        proc_logger = cls._create_logger(settings)
         cls._start_time = int(time.time())
         try:
             base_filename = ReportsPath.create_work_order_path(
@@ -93,9 +98,10 @@ class ProcessRunner:
             for i in range(0, len(settings["serial_numbers"]), process.n_serials_parallel):
                 serials = settings["serial_numbers"][i:i + process.n_serials_parallel]
                 proc_logger.debug(f"Run tasks for: {", ".join(serials)}")
+                timestamp = int(time.time())
                 batch = [{
                     "serial_number": s,
-                    "logger": cls._create_logger(settings.get("view_log_handler", None))
+                    "logger": cls._create_logger(settings, s, timestamp)
                     }
                     for s in serials
                 ]
