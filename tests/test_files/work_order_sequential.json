@@ -1,17 +1,10 @@
 {
     "work_order": "WO-SEQUENTIAL",
-    "process": "Process test sequential",
+    "process": "Process simulate sequential",
     "serial_numbers": [
         "SNR001",
         "SNR002",
-        "SNR003",
-        "SNR004",
-        "SNR005",
-        "SNR006",
-        "SNR007",
-        "SNR008",
-        "SNR009",
-        "SNR010"
+        "SNR003"
     ],
     "auto_start": false,
     "output_folder": "C:\\Work\\lily_prog_test"

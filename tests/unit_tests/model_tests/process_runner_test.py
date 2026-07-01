@@ -23,7 +23,7 @@ class ProcessRunnerTest(TestSuite):
             ({"process": 1234}, "The process must be a string"),
             ({"process": ""}, "The process is not defined"),
             ({"process": "not existing process"}, "The process does not exist"),
-            ({"process": "Process test sequential"}, "The serial numbers are not defined"),
+            ({"process": "Process simulate sequential"}, "The serial numbers are not defined"),
             ({"serial_numbers": "SNR001,SNR002"}, "The serial numbers must be a list"),
             ({"serial_numbers": []}, "The serial numbers are not defined"),
             ({"serial_numbers": ["SNR001", 2]}, "Not all the serial numbers are strings"),
@@ -49,7 +49,8 @@ class ProcessRunnerTest(TestSuite):
             "work_order": WorkOrder.get_work_order(),
             "process": WorkOrder.get_process(),
             "serial_numbers": WorkOrder.get_serial_numbers(),
-            "output_folder": WorkOrder.get_output_folder()
+            "output_folder": WorkOrder.get_output_folder(),
+            "test_logger": self.log
         })
         self.wait_for(ProcessRunner.is_running, False, 60, 1)
 
