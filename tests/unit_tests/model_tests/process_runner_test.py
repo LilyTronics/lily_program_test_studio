@@ -11,6 +11,13 @@ from tests.test_files.test_file import get_path
 
 class ProcessRunnerTest(TestSuite):
 
+    _n_callbacks = 0
+
+    def _start_batch_callback(self, serials):
+        self.log.debug(f"Callback with serials: {serials}")
+        self._n_callbacks += 1
+        return True
+
     def setup(self):
         ProcessesRegistry.load()
 
@@ -50,9 +57,12 @@ class ProcessRunnerTest(TestSuite):
             "process": WorkOrder.get_process(),
             "serial_numbers": WorkOrder.get_serial_numbers(),
             "output_folder": WorkOrder.get_output_folder(),
-            "test_logger": self.log
+            "test_logger": self.log,
+            "start_batch_callback": self._start_batch_callback
         })
         self.wait_for(ProcessRunner.is_running, False, 60, 1)
+        self.log.debug(f"Total callbacks: {self._n_callbacks}")
+        self.fail_if(self._n_callbacks != 3, "Invalid number of callbacks, expected 3")
 
 
 if __name__ == "__main__":

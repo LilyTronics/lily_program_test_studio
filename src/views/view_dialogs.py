@@ -20,8 +20,8 @@ class ViewDialogs:
         return ret_value
 
     @staticmethod
-    def show_confirm(parent, message, title, buttons=wx.YES | wx.NO):
-        dlg = wx.RichMessageDialog(parent, message, title, buttons | wx.ICON_QUESTION)
+    def show_confirm(parent, message, title, buttons=wx.YES | wx.NO, icon=wx.ICON_QUESTION):
+        dlg = wx.RichMessageDialog(parent, message, title, buttons | icon)
         button = dlg.ShowModal()
         dlg.Destroy()
         return button

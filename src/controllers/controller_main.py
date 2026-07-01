@@ -85,6 +85,13 @@ class ControllerMain:
         self._view.enable_controls(True)
         self._process_state = 0
 
+    def _start_batch_callback(self, serials):
+        # We need to add a space between the two new lines to fool the message dialog
+        message = f"Make sure the following serial numbers are ready:\n \n{", ".join(serials)}"
+        result = ViewDialogs.show_confirm(self._view, message, "Start batch",
+                                          wx.OK | wx.CANCEL, wx.ICON_INFORMATION)
+        return result == wx.ID_OK
+
     ##################
     # Event handlers #
     ##################
@@ -139,6 +146,7 @@ class ControllerMain:
         settings = self._view.get_settings()
         try:
             settings["output_folder"] = WorkOrder.get_output_folder()
+            settings["start_batch_callback"] = self._start_batch_callback
             self._log.info(f"Run process: '{settings["process"]}'")
             ProcessRunner.run_process(settings)
             self._run_on_process_start()

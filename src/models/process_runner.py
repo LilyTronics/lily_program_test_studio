@@ -100,6 +100,10 @@ class ProcessRunner:
             # Call run for a batch of serial numbers depending on process
             for i in range(0, len(settings["serial_numbers"]), process.n_serials_parallel):
                 serials = settings["serial_numbers"][i:i + process.n_serials_parallel]
+                if settings.get("start_batch_callback", None) is not None:
+                    if not settings["start_batch_callback"](serials):
+                        proc_logger.info("Process is aborted")
+                        break
                 proc_logger.debug(f"Run tasks for: {", ".join(serials)}")
                 timestamp = int(time.time())
                 batch = [{
