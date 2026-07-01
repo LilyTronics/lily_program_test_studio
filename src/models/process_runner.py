@@ -84,17 +84,15 @@ class ProcessRunner:
 
     @classmethod
     def _process_thread(cls, settings):
-        proc_logger = None
+        test_logger = settings.get("test_logger", None)
+        proc_logger = test_logger
         try:
-            if settings.get("test_logger", None) is not None:
-                proc_logger = settings["test_logger"]
-            else:
+            if proc_logger is None:
                 proc_logger = cls._create_logger(settings)
                 base_filename = ReportsPath.create_work_order_path(
                     settings["output_folder"], settings["work_order"], cls._start_time
                 )
                 proc_logger.add_handler(open(f"{base_filename}.log", "w", encoding="utf-8"))
-
             cls._start_time = int(time.time())
             process = ProcessesRegistry.get_process(settings["process"])(settings["work_order"])
             proc_logger.info(f"Run process: {process.name}")
@@ -107,6 +105,7 @@ class ProcessRunner:
                 batch = [{
                     "serial_number": s,
                     "logger": cls._create_logger(settings, s, timestamp)
+                                if test_logger is None else test_logger
                     }
                     for s in serials
                 ]
