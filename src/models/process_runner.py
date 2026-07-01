@@ -84,13 +84,18 @@ class ProcessRunner:
 
     @classmethod
     def _process_thread(cls, settings):
-        proc_logger = cls._create_logger(settings)
-        cls._start_time = int(time.time())
+        proc_logger = None
         try:
-            base_filename = ReportsPath.create_work_order_path(
-                settings["output_folder"], settings["work_order"], cls._start_time
-            )
-            proc_logger.add_handler(open(f"{base_filename}.log", "w", encoding="utf-8"))
+            if settings.get("test_logger", None) is not None:
+                proc_logger = settings["test_logger"]
+            else:
+                proc_logger = cls._create_logger(settings)
+                base_filename = ReportsPath.create_work_order_path(
+                    settings["output_folder"], settings["work_order"], cls._start_time
+                )
+                proc_logger.add_handler(open(f"{base_filename}.log", "w", encoding="utf-8"))
+
+            cls._start_time = int(time.time())
             process = ProcessesRegistry.get_process(settings["process"])(settings["work_order"])
             proc_logger.info(f"Run process: {process.name}")
             proc_logger.info(f"Total serial numbers: {len(settings["serial_numbers"])}")
@@ -111,7 +116,11 @@ class ProcessRunner:
                     break
             proc_logger.info("Process finished")
         except Exception:
-            proc_logger.error(f"Exception when running process:\n{traceback.format_exc().strip()}")
+            message = f"Exception when running process:\n{traceback.format_exc().strip()}"
+            if proc_logger is not None:
+                proc_logger.error(message)
+            else:
+                print(message)
 
     ##########
     # Public #
