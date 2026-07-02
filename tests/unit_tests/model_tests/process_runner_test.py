@@ -50,7 +50,8 @@ class ProcessRunnerTest(TestSuite):
                 self.log.debug(f"Message: {e}")
                 self.fail_if(str(e) != params[1], f"Wrong message, expected: '{params[1]}'")
 
-    def test_run_process(self):
+    def test_run_process_sequential(self):
+        self._n_callbacks = 0
         WorkOrder.read_from_file(get_path("work_order_sequential.json"))
         ProcessRunner.run_process({
             "work_order": WorkOrder.get_work_order(),
@@ -63,6 +64,21 @@ class ProcessRunnerTest(TestSuite):
         self.wait_for(ProcessRunner.is_running, False, 60, 1)
         self.log.debug(f"Total callbacks: {self._n_callbacks}")
         self.fail_if(self._n_callbacks != 3, "Invalid number of callbacks, expected 3")
+
+    def test_run_process_parallel(self):
+        self._n_callbacks = 0
+        WorkOrder.read_from_file(get_path("work_order_parallel.json"))
+        ProcessRunner.run_process({
+            "work_order": WorkOrder.get_work_order(),
+            "process": WorkOrder.get_process(),
+            "serial_numbers": WorkOrder.get_serial_numbers(),
+            "output_folder": WorkOrder.get_output_folder(),
+            "test_logger": self.log,
+            "start_batch_callback": self._start_batch_callback
+        })
+        self.wait_for(ProcessRunner.is_running, False, 60, 1)
+        self.log.debug(f"Total callbacks: {self._n_callbacks}")
+        self.fail_if(self._n_callbacks != 2, "Invalid number of callbacks, expected 2")
 
 
 if __name__ == "__main__":
